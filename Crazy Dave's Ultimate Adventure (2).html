@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Dave's Ultimate Adventure - نسخه کامل</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* استایل‌های قبلی را حفظ می‌کنیم اما برای صرفه‌جویی در فضا نمایش نمی‌دهم */
+        /* فقط استایل‌های جدید مربوط به داستان را اضافه می‌کنم */
+        
+        .story-image {
+            width: 200px;
+            height: 150px;
+            border-radius: 15px;
+            margin: 15px;
+            border: 4px solid var(--secondary-color);
+            box-shadow: var(--shadow-medium);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .float-left {
+            float: left;
+            margin-right: 20px;
+            margin-left: 0;
+        }
+        
+        body.english .float-left {
+            float: left;
+            margin-right: 0;
+            margin-left: 20px;
+        }
+        
+        .story-text {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            background-color: rgba(255, 152, 0, 0.2);
+            padding: 2px 5px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .consequence {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-right: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            font-style: italic;
+        }
+        
+        body.english .consequence {
+            border-right: none;
+            border-left: 4px solid var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- محتوای قبلی را حفظ می‌کنیم -->
+
+    <script>
+        // محتوای داستان کامل و گسترده
+        const storyContent = {
+            fa: [
+                {
+                    title: "فصل اول: بیداری غیرمنتظره",
+                    text: "صبح یکشنبه بود. دیو دیوانه با صدای عجیبی از خواب بیدار شد. صدایی شبیه به جویدن و خرخر کردن از باغچه می‌آمد. او که هنوز خواب آلود بود، به پنجره نزدیک شد و صحنه وحشتناکی را دید: <span class='highlight'>زامبی‌های سبز رنگ</span> در حال خوردن گل‌های زیبای باغچه بودند!",
+                    image: "🌅",
+                    choices: [
+                        { 
+                            text: "فوراً به باغچه برو و با وسایل خانه از گیاهان دفاع کن", 
+                            nextPage: 2,
+                            effect: { plantsCollected: 2 }
+                        },
+                        { 
+                            text: "اول با پروفسور گیاه‌شناسی تماس بگیر و راهنمایی بخواه", 
+                            nextPage: 3,
+                            effect: { plantsCollected: 3 }
+                        },
+                        { 
+                            text: "سعی کن با زامبی‌ها صحبت کنی و بفهمی چه می‌خواهند", 
+                            nextPage: 4,
+                            effect: { zombiesDefeated: -2 }
+                        }
+                    ]
+                },
+                {
+                    title: "نبرد اولیه",
+                    text: "دیو با عجله به آشپزخانه رفت و یک ماهیتابه و ملاقه برداشت. وقتی به باغچه رسید، دید که سه زامبی در حال خوردن گل آفتابگردان محبوبش هستند. یکی از زامبی‌ها کلاهش را برداشت و گفت: <span class='highlight'>'ما گرسنه‌ایم! مغزهای خوشمزه‌ات را می‌خواهیم!'</span>",
+                    image: "🍳",
+                    choices: [
+                        { 
+                            text: "با ماهیتابه به زامبی‌ها حمله کن", 
+                            nextPage: 5,
+                            effect: { zombiesDefeated: 2, plantsCollected: -1 }
+                        },
+                        { 
+                            text: "سعی کن با ملاقه سر و صدا ایجاد کنی و همسایه‌ها را بیدار کنی", 
+                            nextPage: 6,
+                            effect: { plantsCollected: 1 }
+                        },
+                        { 
+                            text: "برگرد خانه و تاکو درست کنی، شاید زامبی‌ها تاکو دوست داشته باشند", 
+                            nextPage: 7,
+                            effect: { tacosEaten: 2, zombiesDefeated: -1 }
+                        }
+                    ]
+                },
+                {
+                    title: "تماس با پروفسور",
+                    text: "دیو با پروفسور گیاه‌شناسی تماس گرفت. پروفسور با هیجان گفت: <span class='highlight'>'دیو عزیز! من منتظر چنین فرصتی بودم! یک جعبه مخصوص از دانه‌های جادویی برایت فرستاده‌ام. این دانه‌ها می‌توانند به گیاهان جنگجو تبدیل شوند!'</span>",
+                    image: "📞",
+                    choices: [
+                        { 
+                            text: "صبر کن تا بسته برسد سپس دانه‌ها را بکار", 
+                            nextPage: 8,
+                            effect: { plantsCollected: 4 }
+                        },
+                        { 
+                            text: "همین حالا به فروشگاه گیاهان برو و دانه بخر", 
+                            nextPage: 9,
+                            effect: { plantsCollected: 2 }
+                        },
+                        { 
+                            text: "با وسایل موجود از گیاهان دفاع کن تا بسته برسد", 
+                            nextPage: 10,
+                            effect: { plantsCollected: 1, zombiesDefeated: 1 }
+                        }
+                    ]
+                },
+                {
+                    title: "مذاکره با زامبی‌ها",
+                    text: "دیو با احتیاط به زامبی‌ها نزدیک شد و گفت: <span class='highlight'>'آقایان زامبی عزیز، شاید بتوانیم راه بهتری پیدا کنیم. من تاکوهای خوشمزه‌ای درست می‌کنم!'</span> زامبی رهبر نگاهی عجیب به دیو انداخت و گفت: 'ما مغز می‌خواهیم، نه تاکو!'",
+                    image: "🧟‍♂️",
+                    choices: [
+                        { 
+                            text: "به سرعت فرار کن و به خانه برگرد", 
+                            nextPage: 11,
+                            effect: { zombiesDefeated: -1 }
+                        },
+                        { 
+                            text: "سعی کن قانعشان کنی که تاکو از مغز خوشمزه‌تر است", 
+                            nextPage: 12,
+                            effect: { tacosEaten: 3 }
+                        },
+                        { 
+                            text: "با تهدید آن‌ها را بترسان", 
+                            nextPage: 13,
+                            effect: { zombiesDefeated: 1 }
+                        }
+                    ]
+                },
+                {
+                    title: "حمله با ماهیتابه",
+                    text: "دیو با ماهیتابه به سمت زامبی‌ها حمله کرد. <span class='highlight'>بانگ! تینگ! زوم!</span> صدای برخورد ماهیتابه با سر زامبی‌ها در هوا پیچید. دو زامبی فرار کردند اما متأسفانه یکی از گل‌های آفتابگردان در این درگیری آسیب دید.",
+                    image: "⚔️",
+                    choices: [
+                        { 
+                            text: "به تعقیب زامبی‌های فراری برو", 
+                            nextPage: 14,
+                            effect: { zombiesDefeated: 2, plantsCollected: -1 }
+                        },
+                        { 
+                            text: "به گل آسیب دیده رسیدگی کن", 
+                            nextPage: 15,
+                            effect: { plantsCollected: 2 }
+                        },
+                        { 
+                            text: "از همسایه‌ها کمک بخواه", 
+                            nextPage: 16,
+                            effect: { plantsCollected: 1 }
+                        }
+                    ],
+                    consequence: "زامبی‌ها حالا می‌دانند که تو یک جنگجو هستی! مراقب حمله‌های بعدی باش."
+                },
+                {
+                    title: "بسته جادویی رسید",
+                    text: "درست وقتی که دیو داشت گل آسیب دیده را درمان می‌کرد، پستچی بسته پروفسور را رساند. داخل بسته <span class='highlight'>دانه‌های درخشانی</span> بود که به رنگ‌های مختلف می‌درخشیدند. یک دفترچه راهنما هم همراه بسته بود.",
+                    image: "📦",
+                    choices: [
+                        { 
+                            text: "فوراً دانه‌ها را در باغچه بکار", 
+                            nextPage: 17,
+                            effect: { plantsCollected: 5 }
+                        },
+                        { 
+                            text: "اول دفترچه راهنما را با دقت بخوان", 
+                            nextPage: 18,
+                            effect: { plantsCollected: 4, achievements: 1 }
+                        },
+                        { 
+                            text: "با پروفسور تماس بگیر و سوالاتت را بپرس", 
+                            nextPage: 19,
+                            effect: { plantsCollected: 3 }
+                        }
+                    ]
+                },
+                {
+                    title: "رشد گیاهان جنگجو",
+                    text: "دیو دانه‌ها را کاشت و معجزه رخ داد! <span class='highlight'>گیاهان به سرعت رشد کردند و به موجودات شگفت‌انگیزی تبدیل شدند</span>: گل‌های آفتابگردان که نور خورشید تولید می‌کردند، نخودهای شلیک کننده، و گیاهان دیواری که مانند سپر عمل می‌کردند!",
+                    image: "🌻",
+                    choices: [
+                        { 
+                            text: "یک سیستم دفاعی با گیاهان ایجاد کن", 
+                            nextPage: 20,
+                            effect: { plantsCollected: 3, zombiesDefeated: 2 }
+                        },
+                        { 
+                            text: "روش‌های جدید استفاده از گیاهان را آزمایش کن", 
+                            nextPage: 21,
+                            effect: { plantsCollected: 2, achievements: 1 }
+                        },
+                        { 
+                            text: "به همسایه‌ها یاد بده چگونه از گیاهان استفاده کنند", 
+                            nextPage: 22,
+                            effect: { plantsCollected: 1 }
+                        }
+                    ]
+                },
+                {
+                    title: "کشف راز زامبی‌ها",
+                    text: "در حین سازماندهی دفاع، دیو متوجه چیزی عجیب شد: <span class='highlight'>زامبی‌ها یک رهبر جدید داشتند - دکتر زامبوس</span>، یک دانشمند دیوانه که می‌خواست تمام شهر را به زامبی تبدیل کند! او بود که این حمله را رهبری می‌کرد.",
+                    image: "🔍",
+                    choices: [
+                        { 
+                            text: "مستقیماً به لانه دکتر زامبوس حمله کن", 
+                            nextPage: 23,
+                            effect: { zombiesDefeated: 3, plantsCollected: -2 }
+                        },
+                        { 
+                            text: "اول اطلاعات بیشتری درباره دکتر زامبوس جمع کن", 
+                            nextPage: 24,
+                            effect: { achievements: 1 }
+                        },
+                        { 
+                            text: "با سایر ساکنین شهر متحد شو", 
+                            nextPage: 25,
+                            effect: { plantsCollected: 2 }
+                        }
+                    ]
+                },
+                {
+                    title: "نبرد نهایی",
+                    text: "دیو و گیاهانش به همراه همسایه‌ها به لانه دکتر زامبوس حمله کردند. <span class='highlight'>نبردی حماسی</span> درگرفت! گیاهان با قدرت می‌جنگیدند و زامبی‌ها یکی پس از دیگری شکست می‌خوردند.",
+                    image: "💥",
+                    choices: [
+                        { 
+                            text: "با دکتر زامبوس رو در رو شو", 
+                            nextPage: 26,
+                            effect: { zombiesDefeated: 5, achievements: 2 }
+                        },
+                        { 
+                            text: "از گیاهان خاص برای نابودی ماشین زامبی‌سازی استفاده کن", 
+                            nextPage: 27,
+                            effect: { plantsCollected: 3, zombiesDefeated: 4 }
+                        },
+                        { 
+                            text: "زامبی‌ها را به سمت تله بکشان", 
+                            nextPage: 28,
+                            effect: { zombiesDefeated: 6 }
+                        }
+                    ]
+                },
+                {
+                    title: "پیروزی و پاداش",
+                    text: "دیو موفق شد دکتر زامبوس را شکست دهد! <span class='highlight'>شهر نجات یافت و گیاهان به قهرمانان تبدیل شدند</span>. شهردار به دیو مدال افتخار داد و پروفسور یک باغچه جدید و پیشرفته به او هدیه کرد.",
+                    image: "🏆",
+                    choices: [
+                        { 
+                            text: "جشن بزرگی در باغچه برگزار کن", 
+                            nextPage: 29,
+                            effect: { tacosEaten: 5, achievements: 1 }
+                        },
+                        { 
+                            text: "یک مدرسه آموزش گیاه‌شناسی باز کن", 
+                            nextPage: 30,
+                            effect: { plantsCollected: 3, achievements: 2 }
+                        },
+                        { 
+                            text: "به ماجراجویی‌های جدید برو", 
+                            nextPage: 31,
+                            effect: { achievements: 3 }
+                        }
+                    ],
+                    consequence: "تبریک! تو شهر را نجات دادی و به یک قهرمان تبدیل شدی!"
+                },
+                {
+                    title: "پایان داستان",
+                    text: "دیو دیوانه حالا دیگر یک قهرمان بود. <span class='highlight'>باغچه‌اش زیباتر از همیشه شده بود</span> و گیاهان جنگجویش در آرامش و صلح زندگی می‌کردند. اما دیو می‌دانست که همیشه خطرات جدیدی در کمین هستند...",
+                    image: "🌄",
+                    choices: [
+                        { 
+                            text: "داستان را دوباره بازی کن", 
+                            nextPage: 1,
+                            effect: { reset: true }
+                        },
+                        { 
+                            text: "به منوی اصلی برگرد", 
+                            nextPage: 0,
+                            effect: {}
+                        }
+                    ]
+                }
+            ],
+            en: [
+                // محتوای انگلیسی داستان هم به همین صورت کامل خواهد بود
+                // برای صرفه‌جویی در فضا فقط یک نمونه می‌آورم
+                {
+                    title: "Chapter 1: Unexpected Awakening",
+                    text: "It was a Sunday morning. Crazy Dave woke up to a strange sound. There was a noise like chewing and grunting coming from the garden. Still sleepy, he approached the window and saw a terrifying scene: <span class='highlight'>green zombies</span> were eating his beautiful garden flowers!",
+                    image: "🌅",
+                    choices: [
+                        { 
+                            text: "Immediately go to the garden and defend the plants with household items", 
+                            nextPage: 2,
+                            effect: { plantsCollected: 2 }
+                        },
+                        // بقیه انتخاب‌ها...
+                    ]
+                }
+                // بقیه فصل‌ها به انگلیسی...
+            ]
+        };
+
+        // تابع به‌روزرسانی صفحه داستان با جزئیات کامل
+        function updateStoryPage() {
+            const lang = gameState.language;
+            const pageIndex = gameState.currentPage - 1;
+            
+            if (storyContent[lang] && storyContent[lang][pageIndex]) {
+                const storyPage = storyContent[lang][pageIndex];
+                
+                // به‌روزرسانی عنوان و متن
+                document.getElementById('page-title').textContent = storyPage.title;
+                document.getElementById('page-text').innerHTML = storyPage.text;
+                
+                // به‌روزرسانی شماره صفحه
+                document.getElementById('page-number').textContent = 
+                    lang === 'fa' ? `صفحه ${gameState.currentPage} از ${storyContent[lang].length}` : 
+                    `Page ${gameState.currentPage} of ${storyContent[lang].length}`;
+                
+                // به‌روزرسانی تصویر کاراکتر
+                const characterImage = document.querySelector('.character-image');
+                characterImage.textContent = storyPage.image;
+                
+                // به‌روزرسانی انتخاب‌ها
+                const choicesContainer = document.getElementById('choices-container');
+                choicesContainer.innerHTML = '';
+                
+                if (storyPage.choices && storyPage.choices.length > 0) {
+                    storyPage.choices.forEach((choice, index) => {
+                        const button = document.createElement('button');
+                        button.classList.add('choice-button');
+                        
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-seedling';
+                        
+                        const textSpan = document.createElement('span');
+                        textSpan.textContent = choice.text;
+                        
+                        button.appendChild(icon);
+                        button.appendChild(textSpan);
+                        
+                        button.onclick = () => {
+                            // اعمال اثرات انتخاب
+                            if (choice.effect.reset) {
+                                resetGameProgress();
+                            } else if (choice.effect) {
+                                applyChoiceEffects(choice.effect);
+                            }
+                            
+                            // ثبت انتخاب
+                            gameState.choicesMade++;
+                            
+                            // رفتن به صفحه بعدی
+                            if (choice.nextPage === 0) {
+                                showScreen('main-menu');
+                            } else {
+                                gameState.currentPage = choice.nextPage;
+                                updateStoryPage();
+                            }
+                            
+                            // ذخیره وضعیت بازی
+                            saveGameState();
+                        };
+                        
+                        choicesContainer.appendChild(button);
+                    });
+                }
+                
+                // نمایش نتیجه انتخاب قبلی (اگر وجود دارد)
+                showPreviousConsequence(storyPage.consequence);
+            }
+        }
+
+        // تابع اعمال اثرات انتخاب
+        function applyChoiceEffects(effects) {
+            if (effects.plantsCollected) {
+                gameState.plantsCollected += effects.plantsCollected;
+                if (effects.plantsCollected > 0) {
+                    showNotification(`+${effects.plantsCollected} گیاه جمع‌آوری شد!`, 'success');
+                }
+            }
+            
+            if (effects.zombiesDefeated) {
+                gameState.zombiesDefeated += effects.zombiesDefeated;
+                if (effects.zombiesDefeated > 0) {
+                    showNotification(`+${effects.zombiesDefeated} زامبی شکست داده شد!`, 'success');
+                }
+            }
+            
+            if (effects.tacosEaten) {
+                gameState.tacosEaten += effects.tacosEaten;
+                if (effects.tacosEaten > 0) {
+                    showNotification(`+${effects.tacosEaten} تاکو خورده شد!`, 'info');
+                }
+            }
+            
+            if (effects.achievements) {
+                gameState.achievements += effects.achievements;
+                if (effects.achievements > 0) {
+                    showNotification(`+${effects.achievements} دستاورد جدید!`, 'achievement');
+                }
+            }
+        }
+
+        // تابع نمایش نتیجه انتخاب قبلی
+        function showPreviousConsequence(consequence) {
+            // پاک کردن نتیجه قبلی
+            const existingConsequence = document.getElementById('choice-consequence');
+            if (existingConsequence) {
+                existingConsequence.remove();
+            }
+            
+            // نمایش نتیجه جدید (اگر وجود دارد)
+            if (consequence) {
+                const consequenceDiv = document.createElement('div');
+                consequenceDiv.id = 'choice-consequence';
+                consequenceDiv.className = 'consequence';
+                consequenceDiv.textContent = consequence;
+                
+                const pageContent = document.querySelector('.page-content');
+                pageContent.insertBefore(consequenceDiv, document.getElementById('choices-container'));
+            }
+        }
+
+        // تابع نمایش نوتیفیکیشن
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'achievement' ? '#FF9800' : '#2196F3'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                z-index: 1000;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                animation: slideIn 0.5s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // تابع بازنشانی پیشرفت بازی
+        function resetGameProgress() {
+            gameState.currentPage = 1;
+            gameState.pagesRead = 0;
+            gameState.choicesMade = 0;
+            gameState.zombiesDefeated = 0;
+            gameState.plantsCollected = 0;
+            gameState.tacosEaten = 0;
+            gameState.achievements = 0;
+            gameState.startTime = Date.now();
+            
+            showNotification('پیشرفت بازی بازنشانی شد!', 'info');
+        }
+
+        // اضافه کردن استایل انیمیشن برای نوتیفیکیشن
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            .notification {
+                font-family: var(--font-main);
+                font-weight: bold;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

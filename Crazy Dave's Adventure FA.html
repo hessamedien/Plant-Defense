@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماجراجویی دیو دیوانه</title>
+    <style>
+        :root {
+            --primary-color: #8BC34A;
+            --secondary-color: #FF9800;
+            --accent-color: #4CAF50;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --header-height: 60px;
+            --footer-height: 40px;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-title: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --lawn-green: #87C159;
+            --lawn-dark-green: #6B9E3F;
+            --sun-yellow: #FFEB3B;
+            --pea-green: #4CAF50;
+            --zombie-green: #5D8C5D;
+        }
+
+        .theme-dark {
+            --primary-color: #689F38;
+            --secondary-color: #FF5722;
+            --accent-color: #388E3C;
+            --text-color: #f5f5f5;
+            --bg-color: #2E2E2E;
+            --card-bg: #424242;
+            --lawn-green: #5A7D3C;
+            --lawn-dark-green: #4A6531;
+        }
+
+        .theme-zombie {
+            --primary-color: #795548;
+            --secondary-color: #FF5722;
+            --accent-color: #5D4037;
+            --text-color: #f5f5f5;
+            --bg-color: #3E2723;
+            --card-bg: #5D4037;
+            --lawn-green: #5D4037;
+            --lawn-dark-green: #4E342E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2387C159"/><path d="M0 0L100 100M100 0L0 100" stroke="%236B9E3F" stroke-width="2"/></svg>');
+            background-size: 200px 200px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--lawn-green) 0%, var(--accent-color) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        .lawn-stripes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+        }
+
+        #loading-screen h1 {
+            font-family: var(--font-title);
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0 #000;
+            animation: bounce 2s infinite;
+            color: var(--sun-yellow);
+        }
+
+        #loading-screen h2 {
+            font-size: 1.8rem;
+            animation: fadeInOut 2s infinite;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .loading-bar-container {
+            width: 400px;
+            height: 30px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+            border: 2px solid #000;
+            position: relative;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--sun-yellow), var(--secondary-color));
+            border-radius: 15px;
+            animation: loading 5s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 1.5s infinite;
+        }
+
+        .zombie-head {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: var(--zombie-green);
+            border-radius: 50%;
+            top: -5px;
+            left: 0;
+            transform: translateX(-50%);
+            transition: left 5s linear;
+            z-index: 2;
+            border: 2px solid #000;
+        }
+
+        .zombie-head::before, .zombie-head::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 12px;
+        }
+
+        .zombie-head::before {
+            left: 8px;
+        }
+
+        .zombie-head::after {
+            right: 8px;
+        }
+
+        .zombie-mouth {
+            position: absolute;
+            width: 20px;
+            height: 8px;
+            background-color: #000;
+            border-radius: 0 0 10px 10px;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Menu */
+        #main-menu {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            border: 5px solid var(--lawn-dark-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #main-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="%23FFEB3B" opacity="0.1"/></svg>');
+            z-index: 0;
+        }
+
+        .logo {
+            font-family: var(--font-title);
+            font-size: 5rem;
+            color: var(--secondary-color);
+            text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            animation: glow 2s infinite alternate;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .logo-subtitle {
+            font-family: var(--font-main);
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-top: -20px;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 0 #FFF;
+        }
+
+        @keyframes glow {
+            from { 
+                text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.2), 0 0 10px var(--sun-yellow); 
+            }
+            to { 
+                text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.2), 0 0 20px var(--sun-yellow), 0 0 30px var(--secondary-color); 
+            }
+        }
+
+        .menu-button {
+            display: block;
+            width: 80%;
+            max-width: 350px;
+            margin: 15px auto;
+            padding: 18px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: var(--font-main);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 0 var(--lawn-dark-green), 0 10px 20px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 0 var(--lawn-dark-green), 0 15px 20px rgba(0,0,0,0.3);
+        }
+
+        .menu-button:hover::before {
+            left: 100%;
+        }
+
+        .menu-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 var(--lawn-dark-green), 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Story Screen */
+        #story-screen {
+            display: none;
+        }
+
+        .lawn-background {
+            background-color: var(--lawn-green);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            min-height: 500px;
+            border: 5px solid var(--lawn-dark-green);
+            overflow: hidden;
+        }
+
+        .lawn-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0,0,0,0.05) 19px,
+                    rgba(0,0,0,0.05) 20px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0,0,0,0.05) 19px,
+                    rgba(0,0,0,0.05) 20px
+                );
+            pointer-events: none;
+        }
+
+        .page-header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .page-header h2 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 0 #000;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid var(--accent-color);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 15px;
+            left: 25px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            background: rgba(255,255,255,0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .character-image {
+            float: right;
+            margin-left: 20px;
+            margin-bottom: 10px;
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            border: 3px solid var(--secondary-color);
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .choice-button {
+            padding: 15px;
+            background: linear-gradient(to bottom, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: right;
+            box-shadow: 0 4px 0 #B71C1C;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .choice-button:hover {
+            transform: translateX(-10px);
+            box-shadow: 0 6px 0 #B71C1C;
+        }
+
+        .choice-button:hover::before {
+            left: 100%;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            background: linear-gradient(to bottom, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            box-shadow: 0 4px 0 var(--lawn-dark-green);
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0 var(--lawn-dark-green);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 var(--lawn-dark-green);
+        }
+
+        /* Settings */
+        #settings-screen {
+            display: none;
+        }
+
+        .setting-option {
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .setting-option label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .setting-option select, .setting-option input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            font-family: var(--font-main);
+            font-size: 1rem;
+        }
+
+        .setting-option input[type="range"] {
+            -webkit-appearance: none;
+            height: 15px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .setting-option input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #000;
+        }
+
+        /* Floating Button */
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1) rotate(-15deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Credits Screen */
+        #credits-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .credits-content {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 25px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid var(--primary-color);
+            text-align: right;
+        }
+
+        .credits-content h3 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: var(--font-title);
+            font-size: 2rem;
+        }
+
+        .credits-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .credits-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .credits-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Table of Contents */
+        #toc-screen {
+            display: none;
+        }
+
+        .toc-item {
+            padding: 15px;
+            border-bottom: 2px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.7);
+            margin-bottom: 5px;
+            border-radius: 8px;
+        }
+
+        .toc-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-10px);
+        }
+
+        /* Stats Screen */
+        #stats-screen {
+            display: none;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid var(--accent-color);
+        }
+
+        .stat-item {
+            text-align: center;
+            margin: 10px;
+            flex: 1 0 30%;
+            min-width: 150px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        /* Plant and Zombie Animations */
+        .sun {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--sun-yellow) 40%, #FFC107);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--sun-yellow);
+            animation: float 10s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .pea {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--pea-green);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Ending Screen */
+        .ending-message {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 3px solid var(--secondary-color);
+        }
+
+        .ending-title {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .ending-image {
+            font-size: 6rem;
+            margin: 20px 0;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #story-screen, #story-screen * {
+                visibility: visible;
+            }
+            #story-screen {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .navigation, .floating-button {
+                display: none !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .logo {
+                font-size: 3.5rem;
+            }
+            .lawn-background {
+                padding: 15px;
+            }
+            .character-image {
+                float: none;
+                margin: 0 auto 15px;
+                display: block;
+            }
+            .menu-button {
+                width: 90%;
+                padding: 15px;
+            }
+            .stats-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            .logo-subtitle {
+                font-size: 1.2rem;
+            }
+            .page-header h2 {
+                font-size: 1.8rem;
+            }
+            .page-content {
+                padding: 15px;
+            }
+            .ending-title {
+                font-size: 2rem;
+            }
+            .ending-image {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="lawn-stripes"></div>
+        <h1>ماجراجویی دیو دیوانه</h1>
+        <h2>یک بازی متنی ساخته شده توسط طرفداران</h2>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+            <div class="zombie-head"></div>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" class="container" style="display: none;">
+        <div class="logo">ماجراجویی دیو دیوانه</div>
+        <div class="logo-subtitle">یک بازی متنی ساخته شده توسط طرفداران</div>
+        <button class="menu-button" onclick="startNewGame()">شروع ماجراجویی جدید</button>
+        <button class="menu-button" onclick="continueGame()">ادامه ماجراجویی</button>
+        <button class="menu-button" onclick="showScreen('toc-screen')">فهرست مطالب</button>
+        <button class="menu-button" onclick="showScreen('stats-screen')">آمار بازیکن</button>
+        <button class="menu-button" onclick="showScreen('settings-screen')">تنظیمات</button>
+        <button class="menu-button" onclick="showScreen('credits-screen')">سازندگان</button>
+        <button class="menu-button" onclick="exitApp()">خروج</button>
+        
+        <!-- Decorative suns -->
+        <div class="sun" style="top: 10%; left: 10%;"></div>
+        <div class="sun" style="top: 20%; right: 15%;"></div>
+        <div class="sun" style="bottom: 15%; left: 20%;"></div>
+    </div>
+
+    <!-- Story Screen -->
+    <div id="story-screen" class="container">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2 id="story-title">فصل ۱: حمله زامبی‌ها آغاز می‌شود!</h2>
+            </div>
+            <div class="stats-container" id="current-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-sun">0</div>
+                    <div class="stat-label">انرژی خورشید</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-zombies">0</div>
+                    <div class="stat-label">زامبی‌های شکست خورده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-plants">0</div>
+                    <div class="stat-label">گیاهان کاشته شده</div>
+                </div>
+            </div>
+            <div class="page-content" id="story-content">
+                <div class="character-image">🌻</div>
+                <p>به نِیبَرویل خوش آمدید، آرام‌ترین شهر در کل دنیا! خورشید می‌درخشد، پرندگان آواز می‌خوانند و گل‌ها در همه جا شکوفا شده‌اند. اما صبر کنید... این صدای ناله عجیب چیست؟</p>
+                <p>اوه نه! زامبی‌ها از سمت غرب می‌آیند! آن‌ها به آرامی به سمت خانه شما حرکت می‌کنند و گرسنه به نظر می‌رسند... برای مغز!</p>
+                <p>ناگهان، همسایه عجیب و غریب شما دیو دیوانه در ماشین تیون‌آپ خود ظاهر می‌شود. "وافل! ما به گیاهان نیاز داریم! گیاهان گرسنه!" او فریاد می‌زند و یک بسته بذر به سمت شما پرتاب می‌کند.</p>
+                <p>اول چه کار می‌کنید؟</p>
+            </div>
+            <div class="choices" id="story-choices">
+                <button class="choice-button" onclick="makeChoice(1)">کاشت گل‌های آفتاب‌گردان برای جمع‌آوری نور خورشید برای گیاهان بیشتر</button>
+                <button class="choice-button" onclick="makeChoice(2)">فوراً نخوداندازها را بکارید تا در برابر اولین زامبی دفاع کنید</button>
+                <button class="choice-button" onclick="makeChoice(3)">دنبال دیو دیوانه بگردید تا راهنمایی بیشتری بخواهید</button>
+            </div>
+            <div class="page-number">صفحه <span id="current-page">1</span></div>
+            
+            <!-- Decorative elements -->
+            <div class="sun" style="top: 50px; right: 50px;"></div>
+            <div class="pea" style="top: 120px; left: 100px;"></div>
+            <div class="pea" style="top: 180px; left: 150px;"></div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="nextPage()">بعدی</button>
+            <button class="nav-button" onclick="saveGame()">ذخیره بازی</button>
+            <button class="nav-button" onclick="previousPage()">قبلی</button>
+        </div>
+    </div>
+
+    <!-- Stats Screen -->
+    <div id="stats-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>آمار بازیکن</h2>
+            </div>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-sun">0</div>
+                    <div class="stat-label">کل انرژی خورشید جمع‌آوری شده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-zombies">0</div>
+                    <div class="stat-label">کل زامبی‌های شکست خورده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-plants">0</div>
+                    <div class="stat-label">کل گیاهان کاشته شده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-choices">0</div>
+                    <div class="stat-label">تصمیمات گرفته شده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-pages">0</div>
+                    <div class="stat-label">صفحات خوانده شده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="game-score">0</div>
+                    <div class="stat-label">امتیاز ماجراجویی</div>
+                </div>
+            </div>
+            <div class="page-content">
+                <h3>مجموعه گیاهان</h3>
+                <div id="plant-collection">
+                    <!-- Plant collection will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">بازگشت به منو</button>
+        </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div id="toc-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>فهرست مطالب</h2>
+            </div>
+            <div class="page-content">
+                <div class="toc-item" onclick="goToPage(0)">مقدمه: آرامش قبل از طوفان</div>
+                <div class="toc-item" onclick="goToPage(1)">معرفی: ملاقات با دیو دیوانه</div>
+                <div class="toc-item" onclick="goToPage(2)">فصل ۱: حمله زامبی‌ها آغاز می‌شود!</div>
+                <div class="toc-item" onclick="goToPage(3)">فصل ۲: ملاقات با ارتش گیاهان</div>
+                <div class="toc-item" onclick="goToPage(4)">فصل ۳: اولین خط دفاعی شما</div>
+                <div class="toc-item" onclick="goToPage(5)">فصل ۴: استراتژی گردو دیواری</div>
+                <div class="toc-item" onclick="goToPage(6)">فصل ۵: سورپرایز بمب گیلاسی</div>
+                <div class="toc-item" onclick="goToPage(7)">فصل ۶: شیفت شب آغاز می‌شود</div>
+                <div class="toc-item" onclick="goToPage(8)">فصل ۷: متحدان قارچی</div>
+                <div class="toc-item" onclick="goToPage(9)">فصل ۸: تاکتیک‌های دفاع استخر</div>
+                <div class="toc-item" onclick="goToPage(10)">فصل ۹: فینال پشت بام</div>
+                <div class="toc-item" onclick="goToPage(11)">فصل ۱۰: انتقام دکتر زامباس</div>
+                <div class="toc-item" onclick="goToPage(12)">پی نوشت: پاداش یک قهرمان</div>
+                <div class="toc-item" onclick="goToPage(13)">فصل ویژه: باغ مخفی</div>
+                <div class="toc-item" onclick="goToPage(14)">بررسی‌ها و نقدها</div>
+                <div class="toc-item" onclick="goToPage(15)">سپاس‌گزاری‌ها</div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">بازگشت به منو</button>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>تنظیمات</h2>
+            </div>
+            <div class="page-content">
+                <div class="setting-option">
+                    <label for="theme-select">تم:</label>
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="default">پیش‌فرض (سبز)</option>
+                        <option value="dark">حالت تاریک</option>
+                        <option value="zombie">تم زامبی</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="font-size">اندازه فونت:</label>
+                    <input type="range" id="font-size" min="14" max="24" value="16" onchange="changeFontSize(this.value)">
+                    <span id="font-size-value">16px</span>
+                </div>
+                <div class="setting-option">
+                    <label for="sound-toggle">صدا:</label>
+                    <select id="sound-toggle" onchange="toggleSound(this.value)">
+                        <option value="on">روشن</option>
+                        <option value="off">خاموش</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="language-select">زبان:</label>
+                    <select id="language-select" onchange="changeLanguage(this.value)">
+                        <option value="fa">فارسی</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="auto-save">ذخیره خودکار:</label>
+                    <select id="auto-save" onchange="toggleAutoSave(this.value)">
+                        <option value="on">فعال</option>
+                        <option value="off">غیرفعال</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="resetSettings()">بازنشانی تنظیمات</button>
+            <button class="nav-button" onclick="showScreen('main-menu')">بازگشت به منو</button>
+        </div>
+    </div>
+
+    <!-- Credits Screen -->
+    <div id="credits-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>سازندگان</h2>
+            </div>
+            <div class="credits-content">
+                <h3>ماجراجویی دیو دیوانه</h3>
+                <p>یک بازی متنی ساخته شده توسط طرفداران</p>
+                <p>این پروژه به صورت غیرانتفاعی و صرفاً برای سرگرمی ساخته شده است.</p>
+                
+                <h3>توسعه‌دهندگان اصلی</h3>
+                <p>طراحی و برنامه‌نویسی: تیم توسعه‌دهندگان مستقل</p>
+                <p>متن‌نویسی: گروه نویسندگان طرفدار</p>
+                <p>طراحی رابط کاربری: تیم طراحی خلاق</p>
+                
+                <h3>الهام گرفته از</h3>
+                <p>Plants vs. Zombies توسط PopCap Games</p>
+                <p>Crazy Dave و تمام شخصیت‌های مرتبط متعلق به PopCap Games هستند.</p>
+                
+                <h3>سپاس‌گزاری ویژه</h3>
+                <p>با تشکر از تمام طرفداران Plants vs. Zombies که این پروژه را ممکن ساختند.</p>
+                <p>تشکر ویژه از جامعه گیمرهای فارسی‌زبان برای حمایت‌هایشان.</p>
+                
+                <h3>تماس با ما</h3>
+                <p>ایمیل: example@example.com</p>
+                <p>وبسایت: www.example.com</p>
+                
+                <p>© 2023 ماجراجویی دیو دیوانه. تمام حقوق محفوظ است.</p>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">بازگشت به منو</button>
+        </div>
+    </div>
+
+    <!-- Floating Button -->
+    <button class="floating-button" onclick="showScreen('main-menu')">☰</button>
+
+    <script>
+        // Game state
+        let gameState = {
+            currentPage: 0,
+            sunEnergy: 0,
+            zombiesDefeated: 0,
+            plantsPlanted: 0,
+            totalChoices: 0,
+            totalPagesRead: 0,
+            gameScore: 0,
+            plantCollection: [],
+            savedGames: [],
+            settings: {
+                theme: 'default',
+                fontSize: 16,
+                sound: 'on',
+                language: 'fa',
+                autoSave: 'on'
+            }
+        };
+
+        // Story data
+        const storyPages = [
+            {
+                title: "مقدمه: آرامش قبل از طوفان",
+                content: "به نِیبَرویل خوش آمدید، آرام‌ترین شهر در کل دنیا! خورشید می‌درخشد، پرندگان آواز می‌خوانند و گل‌ها در همه جا شکوفا شده‌اند. اما صبر کنید... این صدای ناله عجیب چیست؟",
+                choices: [
+                    "کاوش در مورد صدا",
+                    "نادیده گرفتن صدا و ادامه کارهای روزمره",
+                    "تماس با پلیس محلی"
+                ],
+                character: "🏡"
+            },
+            {
+                title: "معرفی: ملاقات با دیو دیوانه",
+                content: "اوه نه! زامبی‌ها از سمت غرب می‌آیند! آن‌ها به آرامی به سمت خانه شما حرکت می‌کنند و گرسنه به نظر می‌رسند... برای مغز! ناگهان، همسایه عجیب و غریب شما دیو دیوانه در ماشین تیون‌آپ خود ظاهر می‌شود. 'وافل! ما به گیاهان نیاز داریم! گیاهان گرسنه!' او فریاد می‌زند و یک بسته بذر به سمت شما پرتاب می‌کند.",
+                choices: [
+                    "کاشت گل‌های آفتاب‌گردان برای جمع‌آوری نور خورشید برای گیاهان بیشتر",
+                    "فوراً نخوداندازها را بکارید تا در برابر اولین زامبی دفاع کنید",
+                    "دنبال دیو دیوانه بگردید تا راهنمایی بیشتری بخواهید"
+                ],
+                character: "🌻"
+            },
+            {
+                title: "فصل ۱: حمله زامبی‌ها آغاز می‌شود!",
+                content: "زامبی‌ها نزدیک می‌شوند! شما می‌توانید آن‌ها را ببینید که با گام‌های آهسته و لرزان به سمت چمن شما حرکت می‌کنند. دیو دیوانه فریاد می‌زند: 'زمان عمل فرا رسیده است! گیاهان خود را انتخاب کنید و آن‌ها را در خطوط دفاعی قرار دهید!'",
+                choices: [
+                    "کاشت نخودانداز در خط اول",
+                    "کاشت گل آفتاب‌گردان برای تولید انرژی خورشید",
+                    "کاشت گردو دیواری برای محافظت از گیاهان دیگر"
+                ],
+                character: "🧟"
+            },
+            {
+                title: "فصل ۲: ملاقات با ارتش گیاهان",
+                content: "دیو دیوانه جعبه بزرگی از بذرهای مختلف را به شما می‌دهد. 'اینها سربازان تو هستند!' او می‌گوید. 'هر کدام قدرت منحصر به فردی دارند. باید یاد بگیری چگونه از آن‌ها استفاده کنی!'",
+                choices: [
+                    "آشنایی با نخوداندازها",
+                    "کشف گل‌های آفتاب‌گردان",
+                    "آزمایش گردوهای دیواری"
+                ],
+                character: "🌱"
+            },
+            {
+                title: "فصل ۳: اولین خط دفاعی شما",
+                content: "زامبی‌ها به اولین خط دفاعی شما رسیده‌اند! نخوداندازها به سمت آن‌ها شلیک می‌کنند، اما زامبی‌ها همچنان به پیشروی ادامه می‌دهند. به نظر می‌رسد به دفاع قوی‌تری نیاز دارید.",
+                choices: [
+                    "کاشت گردو دیواری برای کند کردن زامبی‌ها",
+                    "افزایش تولید انرژی خورشید با گل‌های آفتاب‌گردان بیشتر",
+                    "کاشت گیاهان جدید مانند بمب گیلاسی برای انفجار گروهی"
+                ],
+                character: "🥜"
+            },
+            {
+                title: "فصل ۴: استراتژی گردو دیواری",
+                content: "گردوهای دیواری شما در حال مقاومت هستند! آن‌ها زامبی‌ها را به اندازه کافی کند می‌کنند تا نخوداندازها بتوانند کار خود را انجام دهند. اما زامبی‌های بیشتری در راه هستند!",
+                choices: [
+                    "تقویت خطوط دفاعی با گردوهای بیشتر",
+                    "اضافه کردن گیاهان جدید به استراتژی",
+                    "درخواست کمک از دیو دیوانه برای تاکتیک‌های پیشرفته"
+                ],
+                character: "🛡️"
+            },
+            {
+                title: "فصل ۵: سورپرایز بمب گیلاسی",
+                content: "زامبی‌ها در یک گروه بزرگ حمله می‌کنند! دیو دیوانه فریاد می‌زند: 'زمان استفاده از بمب گیلاسی است!' این گیاهان کوچک اما قدرتمند می‌توانند چندین زامبی را یکباره نابود کنند.",
+                choices: [
+                    "کاشت بمب گیلاسی در مرکز گروه زامبی‌ها",
+                    "استفاده از تاکتیک‌های دفاعی سنتی",
+                    "ذخیره بمب گیلاسی برای موقعیت‌های خطرناک‌تر"
+                ],
+                character: "🍒"
+            },
+            {
+                title: "فصل ۶: شیفت شب آغاز می‌شود",
+                content: "خورشید در حال غروب است و شب نزدیک می‌شود. در تاریکی، گل‌های آفتاب‌گردان شما انرژی تولید نمی‌کنند. دیو دیوانه می‌گوید: 'نگران نباش! من گیاهانی دارم که در تاریکی هم کار می‌کنند!'",
+                choices: [
+                    "کشف قارچ‌های شب‌زی",
+                    "استفاده از ذخایر انرژی خورشید",
+                    "ساخت سیستم نور مصنوعی برای گیاهان"
+                ],
+                character: "🍄"
+            },
+            {
+                title: "فصل ۷: متحدان قارچی",
+                content: "قارچ‌های شما در شب عالی عمل می‌کنند! آن‌ها بدون نیاز به نور خورشید به دفاع از خانه شما ادامه می‌دهند. اما زامبی‌های جدیدی با کلاه‌های مخروطی ظاهر می‌شوند که مقاوم‌تر هستند.",
+                choices: [
+                    "تقویت قارچ‌ها با گیاهان حمله‌ای قوی‌تر",
+                    "استفاده از قارچ‌های مهاجم برای حمله مستقیم",
+                    "ترکیب قارچ‌ها با گیاهان روز برای دفاع ۲۴ ساعته"
+                ],
+                character: "🍄"
+            },
+            {
+                title: "فصل ۸: تاکتیک‌های دفاع استخر",
+                content: "زامبی‌ها اکنون از طریق استخر شما حمله می‌کنند! دیو دیوانه می‌گوید: 'ما به گیاهان آبی نیاز داریم!' او گیاهان جدیدی را معرفی می‌کند که می‌توانند در آب زنده بمانند و از خانه شما دفاع کنند.",
+                choices: [
+                    "کاشت نیلوفرهای آبی به عنوان پایگاه برای گیاهان دیگر",
+                    "استفاده از گیاهان اختاپوسی برای دفاع مستقیم در آب",
+                    "ترکیب گیاهان زمینی و آبی برای دفاع کامل"
+                ],
+                character: "🌊"
+            },
+            {
+                title: "فصل ۹: فینال پشت بام",
+                content: "زامبی‌ها اکنون از طریق پشت بام حمله می‌کنند! دیو دیوانه فریاد می‌زند: 'این آخرین خط دفاعی است! ما باید از گل‌های گلدانی استفاده کنیم!' او توضیح می‌دهد که چگونه گیاهان در گلدان‌ها می‌توانند روی سقف زنده بمانند.",
+                choices: [
+                    "استفاده از گیاهان پرتابی روی پشت بام",
+                    "کاشت گیاهان مهاجم برای دفاع قوی",
+                    "ترکیب گیاهان مختلف برای ایجاد خط دفاعی متعادل"
+                ],
+                character: "🏠"
+            },
+            {
+                title: "فصل ۱۰: انتقام دکتر زامباس",
+                content: "زامبی نهایی ظاهر می‌شود! دکتر زامباس، رهبر زامبی‌ها، با ماشین زامبی غول‌پیکرش حمله می‌کند. دیو دیوانه می‌گوید: 'این بزرگ‌ترین تهدید است! باید از تمام دانشی که کسب کرده‌ای استفاده کنی!'",
+                choices: [
+                    "استفاده از تاکتیک‌های ترکیبی گیاهان",
+                    "متمرکز کردن تمام گیاهان روی دکتر زامباس",
+                    "استفاده از گیاهان ویژه که دیو دیوانه ارائه می‌دهد"
+                ],
+                character: "👨‍🔬"
+            },
+            {
+                title: "پی نوشت: پاداش یک قهرمان",
+                content: "تبریک می‌گویم! شما دکتر زامباس را شکست داده‌اید و نِیبَرویل را نجات داده‌اید. دیو دیوانه به شما مدال قهرمانی می‌دهد و یک وافل طلایی به عنوان پاداش تقدیم می‌کند. شهر دوباره آرام شده است... تا زمانی که تهدید بعدی ظاهر شود!",
+                choices: [
+                    "ادامه ماجراجویی در باغ مخفی",
+                    "بازگشت به زندگی عادی",
+                    "آماده شدن برای تهدید بعدی"
+                ],
+                character: "🏆"
+            },
+            {
+                title: "فصل ویژه: باغ مخفی",
+                content: "دیو دیوانه شما را به باغ مخفی خود دعوت می‌کند، جایی که او گیاهان نادر و قدرتمند پرورش می‌دهد. 'تو ثابت کرده‌ای که شایستگی دیدن اینجا را داری!' او می‌گوید.",
+                choices: [
+                    "کشف گیاهان نادر",
+                    "یادگیری اسرار باغبانی پیشرفته از دیو دیوانه",
+                    "کمک به دیو دیوانه در پرورش گیاهان جدید"
+                ],
+                character: "🔮"
+            },
+            {
+                title: "بررسی‌ها و نقدها",
+                content: "روزنامه محلی نِیبَرویل داستان قهرمانی شما را چاپ کرده است. 'ناجی نِیبَرویل با گیاهانش از شهر دفاع کرد!' تیتر اول است. همه شما را تحسین می‌کنند و از شما می‌خواهند راز موفقیت‌تان را به اشتراک بگذارید.",
+                choices: [
+                    "اشتراک‌گذاری استراتژی‌های دفاعی با دیگران",
+                    "بازنشستگی از مبارزه با زامبی‌ها",
+                    "تأسیس آکادمی دفاع با گیاهان"
+                ],
+                character: "📰"
+            },
+            {
+                title: "سپاس‌گزاری‌ها",
+                content: "با تشکر از شما برای بازی کردن 'ماجراجویی دیو دیوانه'! امیدواریم از این تجربه لذت برده باشید. این بازی به عنوان ادای احترامی به بازی محبوب Plants vs. Zombies ساخته شده است. همیشه مراقب زامبی‌ها باشید و به یاد داشته باشید: گیاهان بهترین دوستان شما هستند!",
+                choices: [
+                    "شروع بازی جدید",
+                    "بازگشت به منوی اصلی",
+                    "خروج از بازی"
+                ],
+                character: "❤️"
+            }
+        ];
+
+        // Initialize the game
+        window.onload = function() {
+            // Simulate loading process
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-menu').style.display = 'block';
+                
+                // Move zombie head during loading
+                const zombieHead = document.querySelector('.zombie-head');
+                zombieHead.style.left = '100%';
+            }, 5000);
+            
+            // Load saved game if exists
+            loadGame();
+        };
+
+        // Show specific screen
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.container');
+            screens.forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            // Show requested screen
+            document.getElementById(screenId).style.display = 'block';
+            
+            // Update stats if showing stats screen
+            if (screenId === 'stats-screen') {
+                updateStatsDisplay();
+            }
+            
+            // Update TOC if showing TOC screen
+            if (screenId === 'toc-screen') {
+                updateTOCDisplay();
+            }
+        }
+
+        // Start a new game
+        function startNewGame() {
+            // Reset game state
+            gameState = {
+                currentPage: 0,
+                sunEnergy: 50,
+                zombiesDefeated: 0,
+                plantsPlanted: 0,
+                totalChoices: 0,
+                totalPagesRead: 1,
+                gameScore: 0,
+                plantCollection: ['🌻', '🥜'],
+                savedGames: gameState.savedGames,
+                settings: gameState.settings
+            };
+            
+            // Update story display
+            updateStoryDisplay();
+            
+            // Show story screen
+            showScreen('story-screen');
+        }
+
+        // Continue saved game
+        function continueGame() {
+            if (gameState.savedGames.length > 0) {
+                // Load the latest saved game
+                const latestSave = gameState.savedGames[gameState.savedGames.length - 1];
+                gameState = {...gameState, ...latestSave};
+                
+                // Update story display
+                updateStoryDisplay();
+                
+                // Show story screen
+                showScreen('story-screen');
+            } else {
+                alert('هیچ بازی ذخیره‌شده‌ای پیدا نشد. لطفاً یک بازی جدید شروع کنید.');
+            }
+        }
+
+        // Update the story display
+        function updateStoryDisplay() {
+            const currentPageData = storyPages[gameState.currentPage];
+            
+            document.getElementById('story-title').textContent = currentPageData.title;
+            document.getElementById('story-content').innerHTML = `
+                <div class="character-image">${currentPageData.character}</div>
+                <p>${currentPageData.content}</p>
+            `;
+            
+            // Update choices
+            const choicesContainer = document.getElementById('story-choices');
+            choicesContainer.innerHTML = '';
+            
+            currentPageData.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+                button.textContent = choice;
+                button.onclick = () => makeChoice(index + 1);
+                choicesContainer.appendChild(button);
+            });
+            
+            // Update page number
+            document.getElementById('current-page').textContent = gameState.currentPage + 1;
+            
+            // Update current stats
+            document.getElementById('stat-sun').textContent = gameState.sunEnergy;
+            document.getElementById('stat-zombies').textContent = gameState.zombiesDefeated;
+            document.getElementById('stat-plants').textContent = gameState.plantsPlanted;
+        }
+
+        // Make a choice
+        function makeChoice(choiceIndex) {
+            // Update game state based on choice
+            gameState.totalChoices++;
+            gameState.sunEnergy += Math.floor(Math.random() * 10) + 5;
+            gameState.zombiesDefeated += Math.floor(Math.random() * 3);
+            gameState.plantsPlanted += Math.floor(Math.random() * 2) + 1;
+            gameState.gameScore += choiceIndex * 10;
+            
+            // Add random plant to collection occasionally
+            if (Math.random() > 0.7) {
+                const plants = ['🌻', '🥜', '🍒', '🍄', '🌊', '🛡️', '🔮'];
+                const newPlant = plants[Math.floor(Math.random() * plants.length)];
+                if (!gameState.plantCollection.includes(newPlant)) {
+                    gameState.plantCollection.push(newPlant);
+                }
+            }
+            
+            // Move to next page
+            if (gameState.currentPage < storyPages.length - 1) {
+                gameState.currentPage++;
+                gameState.totalPagesRead++;
+            }
+            
+            // Update display
+            updateStoryDisplay();
+            
+            // Auto-save if enabled
+            if (gameState.settings.autoSave === 'on') {
+                saveGame();
+            }
+        }
+
+        // Go to next page
+        function nextPage() {
+            if (gameState.currentPage < storyPages.length - 1) {
+                gameState.currentPage++;
+                gameState.totalPagesRead++;
+                updateStoryDisplay();
+            }
+        }
+
+        // Go to previous page
+        function previousPage() {
+            if (gameState.currentPage > 0) {
+                gameState.currentPage--;
+                updateStoryDisplay();
+            }
+        }
+
+        // Go to specific page
+        function goToPage(pageIndex) {
+            if (pageIndex >= 0 && pageIndex < storyPages.length) {
+                gameState.currentPage = pageIndex;
+                updateStoryDisplay();
+                showScreen('story-screen');
+            }
+        }
+
+        // Save the game
+        function saveGame() {
+            // Create save data
+            const saveData = {
+                currentPage: gameState.currentPage,
+                sunEnergy: gameState.sunEnergy,
+                zombiesDefeated: gameState.zombiesDefeated,
+                plantsPlanted: gameState.plantsPlanted,
+                totalChoices: gameState.totalChoices,
+                totalPagesRead: gameState.totalPagesRead,
+                gameScore: gameState.gameScore,
+                plantCollection: [...gameState.plantCollection],
+                saveDate: new Date().toLocaleString('fa-IR')
+            };
+            
+            // Add to saved games
+            gameState.savedGames.push(saveData);
+            
+            // Keep only last 5 saves
+            if (gameState.savedGames.length > 5) {
+                gameState.savedGames.shift();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('crazyDaveAdventureSave', JSON.stringify(gameState));
+            
+            alert('بازی با موفقیت ذخیره شد!');
+        }
+
+        // Load the game
+        function loadGame() {
+            const savedGame = localStorage.getItem('crazyDaveAdventureSave');
+            if (savedGame) {
+                gameState = JSON.parse(savedGame);
+            }
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            document.getElementById('total-sun').textContent = gameState.sunEnergy;
+            document.getElementById('total-zombies').textContent = gameState.zombiesDefeated;
+            document.getElementById('total-plants').textContent = gameState.plantsPlanted;
+            document.getElementById('total-choices').textContent = gameState.totalChoices;
+            document.getElementById('total-pages').textContent = gameState.totalPagesRead;
+            document.getElementById('game-score').textContent = gameState.gameScore;
+            
+            // Update plant collection
+            const plantCollectionContainer = document.getElementById('plant-collection');
+            plantCollectionContainer.innerHTML = '';
+            
+            gameState.plantCollection.forEach(plant => {
+                const plantElement = document.createElement('span');
+                plantElement.style.fontSize = '2rem';
+                plantElement.style.margin = '5px';
+                plantElement.textContent = plant;
+                plantCollectionContainer.appendChild(plantElement);
+            });
+        }
+
+        // Update TOC display
+        function updateTOCDisplay() {
+            // This function would update the table of contents based on progress
+            // For now, it's handled in the HTML
+        }
+
+        // Change theme
+        function changeTheme(theme) {
+            document.body.className = '';
+            if (theme !== 'default') {
+                document.body.classList.add(`theme-${theme}`);
+            }
+            gameState.settings.theme = theme;
+        }
+
+        // Change font size
+        function changeFontSize(size) {
+            document.body.style.fontSize = `${size}px`;
+            document.getElementById('font-size-value').textContent = `${size}px`;
+            gameState.settings.fontSize = size;
+        }
+
+        // Toggle sound
+        function toggleSound(sound) {
+            gameState.settings.sound = sound;
+            // Sound implementation would go here
+        }
+
+        // Change language
+        function changeLanguage(language) {
+            gameState.settings.language = language;
+            // Language change implementation would go here
+            alert('تغییر زبان نیاز به بارگذاری مجدد صفحه دارد.');
+        }
+
+        // Toggle auto-save
+        function toggleAutoSave(autoSave) {
+            gameState.settings.autoSave = autoSave;
+        }
+
+        // Reset settings
+        function resetSettings() {
+            gameState.settings = {
+                theme: 'default',
+                fontSize: 16,
+                sound: 'on',
+                language: 'fa',
+                autoSave: 'on'
+            };
+            
+            // Apply reset settings
+            changeTheme('default');
+            changeFontSize(16);
+            toggleSound('on');
+            toggleAutoSave('on');
+            
+            // Reset UI elements
+            document.getElementById('theme-select').value = 'default';
+            document.getElementById('font-size').value = 16;
+            document.getElementById('sound-toggle').value = 'on';
+            document.getElementById('language-select').value = 'fa';
+            document.getElementById('auto-save').value = 'on';
+            
+            alert('تنظیمات به حالت پیش‌فرض بازگردانده شدند.');
+        }
+
+        // Exit the app
+        function exitApp() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید از بازی خارج شوید؟')) {
+                // In a real app, this would close the window or app
+                alert('از بازی کردن در ماجراجویی دیو دیوانه متشکریم!');
+                // For web, we can't actually close the window without user interaction
+                // window.close(); would only work if the window was opened by JavaScript
+            }
+        }
+    </script>
+</body>
+</html>

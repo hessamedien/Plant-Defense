@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماجراجویی دیوانه وار دیو - نسخه کامل</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8BC34A;
+            --secondary-color: #FF9800;
+            --accent-color: #4CAF50;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --lawn-green: #87C159;
+            --lawn-dark-green: #6B9E3F;
+            --sun-yellow: #FFEB3B;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 12px 25px rgba(0, 0, 0, 0.2);
+            --transition-fast: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(135, 193, 89, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 152, 0, 0.2) 0%, transparent 20%);
+            background-size: 300px 300px, 400px 400px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* صفحه انتخاب زبان */
+        #language-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--lawn-green) 0%, var(--accent-color) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+        }
+
+        .language-title {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            text-shadow: 3px 3px 0 #000;
+            text-align: center;
+        }
+
+        .language-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 800px;
+        }
+
+        .language-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 280px;
+            text-align: center;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .language-option:hover {
+            transform: translateY(-10px);
+        }
+
+        .language-flag {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .language-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .language-desc {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* صفحه لودینگ */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--lawn-green) 0%, var(--accent-color) 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+            color: white;
+        }
+
+        #loading-screen h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 0 #000;
+            text-align: center;
+        }
+
+        #loading-screen h2 {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .loading-bar-container {
+            width: 400px;
+            height: 30px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            margin-top: 30px;
+            overflow: hidden;
+            border: 3px solid #000;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--sun-yellow), var(--secondary-color));
+            border-radius: 15px;
+            transition: width 0.5s ease;
+        }
+
+        /* منوی اصلی */
+        #main-menu {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: var(--shadow-heavy);
+            margin-top: 20px;
+            border: 6px solid var(--lawn-dark-green);
+            display: none;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            color: var(--secondary-color);
+            text-shadow: 3px 3px 0 #000;
+            margin-bottom: 20px;
+        }
+
+        .logo-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 40px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 350px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 6px 0 var(--lawn-dark-green);
+            gap: 10px;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 var(--lawn-dark-green);
+        }
+
+        .menu-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 0 var(--lawn-dark-green);
+        }
+
+        /* صفحه داستان */
+        #story-screen {
+            display: none;
+        }
+
+        .lawn-background {
+            background-color: var(--lawn-green);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-heavy);
+            border: 6px solid var(--lawn-dark-green);
+            position: relative;
+            min-height: 500px;
+        }
+
+        .page-header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .page-content {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-light);
+            border: 3px solid var(--accent-color);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .character-image {
+            float: right;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            border: 3px solid var(--secondary-color);
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .choice-button {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: right;
+            box-shadow: 0 4px 0 #B71C1C;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .choice-button:hover {
+            transform: translateX(-8px);
+            box-shadow: 0 6px 0 #B71C1C;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 0 var(--lawn-dark-green);
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 0 var(--lawn-dark-green);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 var(--lawn-dark-green);
+        }
+
+        /* دکمه شناور */
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-heavy);
+            z-index: 100;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            display: none;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* صفحه تنظیمات */
+        #settings-screen {
+            display: none;
+        }
+
+        .setting-option {
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            border: 2px solid var(--primary-color);
+        }
+
+        .setting-option label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .setting-option select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            background: white;
+        }
+
+        /* صفحه اطلاعات */
+        #credits-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .credits-content {
+            padding: 25px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+            border: 3px solid var(--primary-color);
+            text-align: right;
+        }
+
+        .credits-content h3 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .credits-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* رسپانسیو */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .language-title {
+                font-size: 2.2rem;
+            }
+
+            .language-option {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .menu-button {
+                width: 95%;
+            }
+
+            .character-image {
+                float: none;
+                margin: 0 auto 15px;
+                display: block;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- صفحه انتخاب زبان -->
+    <div id="language-screen">
+        <h1 class="language-title">ماجراجویی دیوانه وار دیو</h1>
+        <div class="language-options">
+            <div class="language-option" onclick="selectLanguage('fa')">
+                <div class="language-flag">🇮🇷</div>
+                <div class="language-name">فارسی</div>
+                <div class="language-desc">نسخه فارسی بازی</div>
+            </div>
+            <div class="language-option" onclick="selectLanguage('en')">
+                <div class="language-flag">🇺🇸</div>
+                <div class="language-name">English</div>
+                <div class="language-desc">English version</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحه لودینگ -->
+    <div id="loading-screen">
+        <h1>ماجراجویی دیوانه وار دیو</h1>
+        <h2 id="loading-text">در حال بارگذاری بازی...</h2>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="loading-bar"></div>
+        </div>
+    </div>
+
+    <!-- کانتینر اصلی -->
+    <div class="container">
+        <!-- منوی اصلی -->
+        <div id="main-menu">
+            <div class="logo">ماجراجویی دیوانه وار دیو</div>
+            <div class="logo-subtitle">دفاع از باغچه در برابر حمله زامبی‌ها!</div>
+            
+            <div class="menu-buttons">
+                <button class="menu-button" onclick="showScreen('story-screen')">
+                    <i class="fas fa-book"></i>
+                    <span>شروع ماجراجویی</span>
+                </button>
+                <button class="menu-button" onclick="showScreen('settings-screen')">
+                    <i class="fas fa-cog"></i>
+                    <span>تنظیمات</span>
+                </button>
+                <button class="menu-button" onclick="showScreen('credits-screen')">
+                    <i class="fas fa-info-circle"></i>
+                    <span>درباره بازی</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحه داستان -->
+        <div id="story-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2 id="page-title">شروع ماجراجویی</h2>
+                </div>
+                <div class="page-content">
+                    <div class="character-image" id="character-image">🌻</div>
+                    <p id="page-text">دیو دیوانه از خواب بیدار می‌شود و متوجه می‌شود که زامبی‌ها به باغچه‌اش حمله کرده‌اند! او باید سریع عمل کند و گیاهانش را برای دفاع از خانه‌اش سازماندهی کند.</p>
+                    
+                    <div class="choices" id="choices-container">
+                        <!-- انتخاب‌ها به صورت داینامیک اضافه می‌شوند -->
+                    </div>
+                </div>
+                <div class="page-number" id="page-number">صفحه 1 از 10</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="nav-button" onclick="previousPage()">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>صفحه قبل</span>
+                </button>
+                <button class="nav-button" onclick="nextPage()">
+                    <span>صفحه بعد</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحه تنظیمات -->
+        <div id="settings-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2>تنظیمات بازی</h2>
+                </div>
+                <div class="page-content">
+                    <div class="setting-option">
+                        <label for="theme-select">تم بازی:</label>
+                        <select id="theme-select" onchange="changeTheme(this.value)">
+                            <option value="light">روشن (پیش‌فرض)</option>
+                            <option value="dark">تیره</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <label for="font-size">اندازه فونت:</label>
+                        <select id="font-size" onchange="changeFontSize(this.value)">
+                            <option value="small">کوچک</option>
+                            <option value="medium" selected>متوسط</option>
+                            <option value="large">بزرگ</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <button class="menu-button" onclick="resetProgress()" style="width: 100%; background: linear-gradient(135deg, #f44336, #B71C1C);">
+                            <i class="fas fa-trash"></i>
+                            <span>بازنشانی پیشرفت بازی</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="nav-button" onclick="showScreen('main-menu')">
+                    <i class="fas fa-home"></i>
+                    <span>بازگشت به منوی اصلی</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحه اطلاعات -->
+        <div id="credits-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2>درباره بازی</h2>
+                </div>
+                <div class="page-content">
+                    <div class="credits-content">
+                        <h3>ماجراجویی دیوانه وار دیو</h3>
+                        <p>این بازی بر اساس دنیای محبوب Plants vs. Zombies ساخته شده است و داستان ماجراجویی‌های دیو دیوانه را روایت می‌کند.</p>
+                        
+                        <h3>توسعه دهندگان</h3>
+                        <p>این بازی توسط تیم توسعه‌دهندگان مستقل با الهام از بازی اصلی Plants vs. Zombies ساخته شده است.</p>
+                        
+                        <h3>منابع استفاده شده</h3>
+                        <p>• فونت فارسی: Vazirmatn</p>
+                        <p>• آیکن‌ها: Font Awesome</p>
+                        <p>• الهام‌گیری: بازی Plants vs. Zombies توسط PopCap Games</p>
+                        
+                        <h3>نسخه بازی</h3>
+                        <p>نسخه ۱.۰.۰ - ماجراجویی نهایی دیو</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="nav-button" onclick="showScreen('main-menu')">
+                    <i class="fas fa-home"></i>
+                    <span>بازگشت به منوی اصلی</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- دکمه شناور -->
+    <button class="floating-button" onclick="showScreen('main-menu')">
+        <i class="fas fa-home"></i>
+    </button>
+
+    <script>
+        // وضعیت بازی
+        const gameState = {
+            currentPage: 1,
+            totalPages: 10,
+            language: 'fa',
+            plants: 0,
+            zombies: 0,
+            tacos: 0
+        };
+
+        // محتوای داستان
+        const storyContent = {
+            fa: [
+                {
+                    title: "شروع ماجراجویی",
+                    text: "صبح یکشنبه بود. دیو دیوانه با صدای عجیبی از خواب بیدار شد. صدایی شبیه به جویدن و خرخر کردن از باغچه می‌آمد. او که هنوز خواب آلود بود، به پنجره نزدیک شد و صحنه وحشتناکی را دید: زامبی‌های سبز رنگ در حال خوردن گل‌های زیبای باغچه بودند!",
+                    image: "😱",
+                    choices: [
+                        { text: "فوراً به باغچه برو و با وسایل خانه از گیاهان دفاع کن", nextPage: 2 },
+                        { text: "اول با پروفسور گیاه‌شناسی تماس بگیر و راهنمایی بخواه", nextPage: 3 },
+                        { text: "سعی کن با زامبی‌ها صحبت کنی و بفهمی چه می‌خواهند", nextPage: 4 }
+                    ]
+                },
+                {
+                    title: "دفاع از باغچه",
+                    text: "دیو با عجله به آشپزخانه رفت و یک ماهیتابه و ملاقه برداشت. وقتی به باغچه رسید، دید که سه زامبی در حال خوردن گل آفتابگردان محبوبش هستند. یکی از زامبی‌ها کلاهش را برداشت و گفت: 'ما گرسنه‌ایم! مغزهای خوشمزه‌ات را می‌خواهیم!'",
+                    image: "🍳",
+                    choices: [
+                        { text: "با ماهیتابه به زامبی‌ها حمله کن", nextPage: 5 },
+                        { text: "سعی کن با ملاقه سر و صدا ایجاد کنی و همسایه‌ها را بیدار کنی", nextPage: 6 },
+                        { text: "برگرد خانه و تاکو درست کنی، شاید زامبی‌ها تاکو دوست داشته باشند", nextPage: 7 }
+                    ]
+                },
+                {
+                    title: "تماس با پروفسور",
+                    text: "دیو با پروفسور گیاه‌شناسی تماس گرفت. پروفسور با هیجان گفت: 'دیو عزیز! من منتظر چنین فرصتی بودم! یک جعبه مخصوص از دانه‌های جادویی برایت فرستاده‌ام. این دانه‌ها می‌توانند به گیاهان جنگجو تبدیل شوند!'",
+                    image: "📞",
+                    choices: [
+                        { text: "صبر کن تا بسته برسد سپس دانه‌ها را بکار", nextPage: 8 },
+                        { text: "همین حالا به فروشگاه گیاهان برو و دانه بخر", nextPage: 9 },
+                        { text: "با وسایل موجود از گیاهان دفاع کن تا بسته برسد", nextPage: 10 }
+                    ]
+                },
+                {
+                    title: "مذاکره با زامبی‌ها",
+                    text: "دیو با احتیاط به زامبی‌ها نزدیک شد و گفت: 'آقایان زامبی عزیز، شاید بتوانیم راه بهتری پیدا کنیم. من تاکوهای خوشمزه‌ای درست می‌کنم!' زامبی رهبر نگاهی عجیب به دیو انداخت و گفت: 'ما مغز می‌خواهیم، نه تاکو!'",
+                    image: "🧟‍♂️",
+                    choices: [
+                        { text: "به سرعت فرار کن و به خانه برگرد", nextPage: 2 },
+                        { text: "سعی کن قانعشان کنی که تاکو از مغز خوشمزه‌تر است", nextPage: 7 },
+                        { text: "با تهدید آن‌ها را بترسان", nextPage: 5 }
+                    ]
+                },
+                {
+                    title: "حمله با ماهیتابه",
+                    text: "دیو با ماهیتابه به سمت زامبی‌ها حمله کرد. بانگ! تینگ! زوم! صدای برخورد ماهیتابه با سر زامبی‌ها در هوا پیچید. دو زامبی فرار کردند اما متأسفانه یکی از گل‌های آفتابگردان در این درگیری آسیب دید.",
+                    image: "⚔️",
+                    choices: [
+                        { text: "به تعقیب زامبی‌های فراری برو", nextPage: 10 },
+                        { text: "به گل آسیب دیده رسیدگی کن", nextPage: 8 },
+                        { text: "از همسایه‌ها کمک بخواه", nextPage: 9 }
+                    ]
+                },
+                {
+                    title: "بیدار کردن همسایه‌ها",
+                    text: "دیو با ملاقه شروع به ایجاد سر و صدا کرد. همسایه‌ها یکی پس از دیگری از خانه‌هایشان بیرون آمدند. وقتی صحنه را دیدند، وحشت‌زده شدند. اما دیو به آن‌ها اطمینان داد که با هم می‌توانند از زامبی‌ها دفاع کنند.",
+                    image: "🔔",
+                    choices: [
+                        { text: "با همسایه‌ها یک استراتژی دفاعی طراحی کن", nextPage: 8 },
+                        { text: "از همسایه‌ها بخواه وسایل دفاعی بیاورند", nextPage: 10 },
+                        { text: "یک گروه کوچک برای مذاکره با زامبی‌ها تشکیل بده", nextPage: 4 }
+                    ]
+                },
+                {
+                    title: "تاکوی جادویی",
+                    text: "دیو به خانه برگشت و شروع به درست کردن تاکو کرد. وقتی تاکوها آماده شدند، بوی خوش آن‌ها در سراسر باغچه پیچید. زامبی‌ها که بوی تاکو را احساس کردند، کنجکاو شدند. یکی از آن‌ها گفت: 'بوی خوبی می‌آید!'",
+                    image: "🌮",
+                    choices: [
+                        { text: "تاکوها را به زامبی‌ها تعارف کن", nextPage: 10 },
+                        { text: "از تاکوها به عنوان طعمه استفاده کن", nextPage: 5 },
+                        { text: "با پروفسور تماس بگیر و بپرس آیا تاکوها روی زامبی‌ها اثر دارند", nextPage: 3 }
+                    ]
+                },
+                {
+                    title: "بسته جادویی رسید",
+                    text: "درست وقتی که دیو داشت گل آسیب دیده را درمان می‌کرد، پستچی بسته پروفسور را رساند. داخل بسته دانه‌های درخشانی بود که به رنگ‌های مختلف می‌درخشیدند. یک دفترچه راهنما هم همراه بسته بود.",
+                    image: "📦",
+                    choices: [
+                        { text: "فوراً دانه‌ها را در باغچه بکار", nextPage: 10 },
+                        { text: "اول دفترچه راهنما را با دقت بخوان", nextPage: 10 },
+                        { text: "با پروفسور تماس بگیر و سوالاتت را بپرس", nextPage: 3 }
+                    ]
+                },
+                {
+                    title: "خرید از فروشگاه",
+                    text: "دیو به فروشگاه گیاهان رفت. فروشنده وقتی داستان را شنید، بسیار هیجان‌زده شد. او به دیو انواع دانه‌های مقاوم و گیاهان خاص نشان داد که می‌توانستند در برابر زامبی‌ها مقاومت کنند.",
+                    image: "🏪",
+                    choices: [
+                        { text: "گیاهان دفاعی بخر", nextPage: 10 },
+                        { text: "گیاهان حمله‌ای بخر", nextPage: 10 },
+                        { text: "مخلوطی از هر دو نوع بخر", nextPage: 10 }
+                    ]
+                },
+                {
+                    title: "پیروزی نهایی",
+                    text: "با کمک گیاهان جادویی و همکاری همسایه‌ها، دیو موفق شد زامبی‌ها را شکست دهد. باغچه حالا امن بود و گیاهان دوباره شکوفا شدند. دیو فهمید که با همکاری و خلاقیت می‌توان بر هر مشکلی غلبه کرد. او یک جشن بزرگ در باغچه برگزار کرد و برای همه تاکو پخت!",
+                    image: "🎉",
+                    choices: [
+                        { text: "داستان را دوباره بازی کن", nextPage: 1 },
+                        { text: "بازگشت به منوی اصلی", nextPage: 0 }
+                    ]
+                }
+            ]
+        };
+
+        // انتخاب زبان
+        function selectLanguage(lang) {
+            gameState.language = lang;
+            document.getElementById('language-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'flex';
+            
+            // شبیه‌سازی لودینگ
+            let progress = 0;
+            const loadingBar = document.getElementById('loading-bar');
+            const loadingText = document.getElementById('loading-text');
+            
+            const interval = setInterval(() => {
+                progress += 5;
+                loadingBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        document.getElementById('main-menu').style.display = 'block';
+                        document.querySelector('.floating-button').style.display = 'flex';
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        // نمایش صفحه مورد نظر
+        function showScreen(screenId) {
+            // مخفی کردن تمام صفحات
+            const screens = ['main-menu', 'story-screen', 'settings-screen', 'credits-screen'];
+            screens.forEach(screen => {
+                document.getElementById(screen).style.display = 'none';
+            });
+            
+            // نمایش صفحه درخواستی
+            document.getElementById(screenId).style.display = 'block';
+            
+            // اگر صفحه داستان است، محتوای آن را به‌روزرسانی کن
+            if (screenId === 'story-screen') {
+                updateStoryPage();
+            }
+        }
+
+        // به‌روزرسانی صفحه داستان
+        function updateStoryPage() {
+            const pageIndex = gameState.currentPage - 1;
+            const page = storyContent[gameState.language][pageIndex];
+            
+            if (page) {
+                document.getElementById('page-title').textContent = page.title;
+                document.getElementById('page-text').textContent = page.text;
+                document.getElementById('character-image').textContent = page.image;
+                document.getElementById('page-number').textContent = `صفحه ${gameState.currentPage} از ${gameState.totalPages}`;
+                
+                // به‌روزرسانی انتخاب‌ها
+                const choicesContainer = document.getElementById('choices-container');
+                choicesContainer.innerHTML = '';
+                
+                page.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.className = 'choice-button';
+                    button.innerHTML = `<i class="fas fa-seedling"></i><span>${choice.text}</span>`;
+                    button.onclick = () => {
+                        if (choice.nextPage === 0) {
+                            showScreen('main-menu');
+                        } else {
+                            gameState.currentPage = choice.nextPage;
+                            updateStoryPage();
+                        }
+                    };
+                    choicesContainer.appendChild(button);
+                });
+            }
+        }
+
+        // صفحه بعدی
+        function nextPage() {
+            if (gameState.currentPage < gameState.totalPages) {
+                gameState.currentPage++;
+                updateStoryPage();
+            }
+        }
+
+        // صفحه قبلی
+        function previousPage() {
+            if (gameState.currentPage > 1) {
+                gameState.currentPage--;
+                updateStoryPage();
+            }
+        }
+
+        // تغییر تم
+        function changeTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.style.setProperty('--bg-color', '#2E2E2E');
+                document.documentElement.style.setProperty('--text-color', '#f5f5f5');
+                document.documentElement.style.setProperty('--card-bg', '#424242');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#f5f5f5');
+                document.documentElement.style.setProperty('--text-color', '#333');
+                document.documentElement.style.setProperty('--card-bg', '#ffffff');
+            }
+        }
+
+        // تغییر اندازه فونت
+        function changeFontSize(size) {
+            if (size === 'small') {
+                document.body.style.fontSize = '14px';
+            } else if (size === 'large') {
+                document.body.style.fontSize = '20px';
+            } else {
+                document.body.style.fontSize = '16px';
+            }
+        }
+
+        // بازنشانی پیشرفت
+        function resetProgress() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید تمام پیشرفت بازی را بازنشانی کنید؟')) {
+                gameState.currentPage = 1;
+                updateStoryPage();
+                alert('پیشرفت بازی بازنشانی شد!');
+                showScreen('main-menu');
+            }
+        }
+
+        // مقداردهی اولیه
+        window.onload = function() {
+            // نمایش صفحه انتخاب زبان
+            document.getElementById('language-screen').style.display = 'flex';
+        };
+    </script>
+</body>
+</html>

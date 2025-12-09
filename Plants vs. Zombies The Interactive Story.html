@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plants vs. Zombies: The Interactive Story</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        :root {
+            --primary-color: #8BC34A;
+            --secondary-color: #FF9800;
+            --accent-color: #4CAF50;
+            --dark-color: #388E3C;
+            --light-color: #C8E6C9;
+            --text-color: #333;
+            --background-color: #f5f5f5;
+            --zombie-green: #795548;
+            --sun-yellow: #FFC107;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+        }
+
+        .loading-text {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            animation: fadeInOut 3s infinite;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 20px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background-color: var(--sun-yellow);
+            border-radius: 10px;
+            animation: loading 5s forwards;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Main Menu */
+        #main-menu {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%238BC34A"/><circle cx="50" cy="50" r="30" fill="%234CAF50"/></svg>');
+            background-size: cover;
+            color: white;
+            padding: 20px;
+        }
+
+        .game-title {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            color: var(--sun-yellow);
+            animation: titleGlow 3s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px var(--sun-yellow), 0 0 20px var(--sun-yellow); }
+            100% { text-shadow: 0 0 20px var(--sun-yellow), 0 0 30px var(--sun-yellow), 0 0 40px var(--sun-yellow); }
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 300px;
+        }
+
+        .menu-btn {
+            padding: 15px 30px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .menu-btn:hover {
+            background-color: var(--dark-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Content Pages */
+        .page {
+            display: none;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .page-content {
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .character-card {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .character-name {
+            font-weight: bold;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+
+        /* Story Pages */
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .choice-btn {
+            padding: 15px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background-color: var(--dark-color);
+            transform: translateX(10px);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #F57C00;
+        }
+
+        .nav-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Settings */
+        .settings-option {
+            margin-bottom: 20px;
+        }
+
+        .settings-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .settings-select, .settings-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Floating Button */
+        #floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .menu-buttons {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-text">Sorena Present:</div>
+        <div class="subtitle">Plants vs. Zombies: The Interactive Story</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu">
+        <h1 class="game-title">Plants vs. Zombies</h1>
+        <div class="menu-buttons">
+            <button class="menu-btn" onclick="showPage('story-page-1')">Start Story</button>
+            <button class="menu-btn" onclick="showPage('contents-page')">Table of Contents</button>
+            <button class="menu-btn" onclick="showPage('preface-page')">Preface</button>
+            <button class="menu-btn" onclick="showPage('settings-page')">Settings</button>
+            <button class="menu-btn" onclick="showPage('credits-page')">Credits</button>
+            <button class="menu-btn" onclick="exitGame()">Exit</button>
+        </div>
+    </div>
+
+    <!-- Story Pages -->
+    <div id="story-page-1" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Chapter 1: A Sunny Day in Suburbia</h2>
+        </div>
+        <div class="page-content">
+            <div class="story-text">
+                <p>It was a beautiful, sunny day in the quiet suburb of Neighborville. The birds were chirping, the bees were buzzing, and Crazy Dave was, well, being crazy as usual.</p>
+                <p>You were tending to your garden, planting some lovely peashooters and sunflowers, when suddenly you heard a strange groaning sound coming from down the street.</p>
+                <p>"BRAINS..." the voice moaned. "MUST... HAVE... BRAINS..."</p>
+                <p>You peeked over your fence and saw a shuffling figure with green skin, tattered clothes, and a distinct lack of brainpower. A ZOMBIE!</p>
+                <p>Just as you were about to panic, Crazy Dave popped up from behind your sunflower patch, munching on a taco.</p>
+                <p>"Waaazzappp?" he mumbled through a mouthful of taco. "Zombies, huh? Don't worry, I've got just the thing!"</p>
+                <p>He handed you a strange-looking plant with a determined expression on its leafy face.</p>
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn" onclick="makeChoice(1, 1)">Take the plant and ask Crazy Dave what it does</button>
+                <button class="choice-btn" onclick="makeChoice(1, 2)">Politely decline and try to reason with the zombie</button>
+            </div>
+        </div>
+        <div class="page-footer">
+            Page 1
+        </div>
+    </div>
+
+    <div id="story-page-2" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Chapter 2: The First Defense</h2>
+        </div>
+        <div class="page-content">
+            <div class="story-text">
+                <p>You decided to take the plant from Crazy Dave. It wiggled in your hand excitedly.</p>
+                <p>"This is a Peashooter!" Dave explained. "It shoots peas at zombies! PEAS! Can you believe it? Who would've thought vegetables could be so violent?"</p>
+                <p>You planted the Peashooter in your front lawn, and just in time too! The zombie was getting closer, moaning about brains with every shuffling step.</p>
+                <p>The Peashooter took aim and... PTOO! A pea flew through the air and hit the zombie right in the forehead!</p>
+                <p>The zombie stopped, looked confused for a moment, then continued shuffling forward.</p>
+                <p>"Hmm," said Crazy Dave, scratching his helmet. "Might need more than one Peashooter."</p>
+                <p>Just then, a Sunflower popped up next to the Peashooter. "Hi! I'm Sunny! I produce sunlight that you can use to plant more friends!"</p>
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn" onclick="makeChoice(2, 1)">Plant more Peashooters to build a stronger defense</button>
+                <button class="choice-btn" onclick="makeChoice(2, 2)">Try talking to the zombie again, maybe it's just misunderstood</button>
+            </div>
+        </div>
+        <div class="page-footer">
+            Page 2
+        </div>
+    </div>
+
+    <!-- Contents Page -->
+    <div id="contents-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Table of Contents</h2>
+        </div>
+        <div class="page-content">
+            <ul>
+                <li><a href="#" onclick="showPage('preface-page')">Preface</a></li>
+                <li><a href="#" onclick="showPage('introduction-page')">Introduction</a></li>
+                <li><a href="#" onclick="showPage('story-page-1')">Chapter 1: A Sunny Day in Suburbia</a></li>
+                <li><a href="#" onclick="showPage('story-page-2')">Chapter 2: The First Defense</a></li>
+                <li><a href="#" onclick="showPage('characters-page')">Characters</a></li>
+                <li><a href="#" onclick="showPage('reviews-page')">Reviews</a></li>
+                <li><a href="#" onclick="showPage('credits-page')">Credits</a></li>
+            </ul>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('main-menu')">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Preface Page -->
+    <div id="preface-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Preface</h2>
+        </div>
+        <div class="page-content">
+            <p>Welcome to "Plants vs. Zombies: The Interactive Story" - a whimsical adventure set in the beloved universe of Plants vs. Zombies!</p>
+            <p>This interactive novel brings together the charming characters, hilarious situations, and strategic gameplay of the original game in a whole new format.</p>
+            <p>As you navigate through this story, you'll make choices that determine the fate of your neighborhood. Will you defend your home with an army of plants? Or will you try to reason with the brain-craving zombies?</p>
+            <p>The choice is yours!</p>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('main-menu')">Back to Main Menu</button>
+            <button class="nav-btn" onclick="showPage('introduction-page')">Next: Introduction</button>
+        </div>
+    </div>
+
+    <!-- Introduction Page -->
+    <div id="introduction-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Introduction</h2>
+        </div>
+        <div class="page-content">
+            <p>In the peaceful town of Neighborville, something strange is happening. Zombies are appearing, and they're hungry for brains!</p>
+            <p>But don't worry - you have help! Crazy Dave and his army of combat-ready plants are here to assist you in defending your home.</p>
+            <p>This story puts you in the middle of the action, where every decision matters. Will you be a strategic mastermind or try unconventional approaches to solve the zombie problem?</p>
+            <p>Get ready for an adventure filled with laughter, excitement, and plenty of plant-based action!</p>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('preface-page')">Previous: Preface</button>
+            <button class="nav-btn" onclick="showPage('characters-page')">Next: Characters</button>
+        </div>
+    </div>
+
+    <!-- Characters Page -->
+    <div id="characters-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Characters</h2>
+        </div>
+        <div class="page-content">
+            <div class="character-card">
+                <div class="character-name">Peashooter</div>
+                <p>The frontline defender of your lawn. Peashooter fires peas at zombies with remarkable accuracy (for a plant).</p>
+            </div>
+            <div class="character-card">
+                <div class="character-name">Sunflower</div>
+                <p>Produces sunlight, the currency of plant warfare. Always cheerful and ready to help!</p>
+            </div>
+            <div class="character-card">
+                <div class="character-name">Crazy Dave</div>
+                <p>Your eccentric neighbor who speaks in gibberish and always has a taco handy. He's the expert on zombie defense.</p>
+            </div>
+            <div class="character-card">
+                <div class="character-name">Zombie</div>
+                <p>Slow-moving, brain-craving undead. Not the brightest, but determined in their pursuit of delicious brains.</p>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('introduction-page')">Previous: Introduction</button>
+            <button class="nav-btn" onclick="showPage('main-menu')">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Settings</h2>
+        </div>
+        <div class="page-content">
+            <div class="settings-option">
+                <label class="settings-label" for="theme-select">Theme:</label>
+                <select class="settings-select" id="theme-select" onchange="changeTheme(this.value)">
+                    <option value="default">Default Green</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="sunny">Sunny Yellow</option>
+                    <option value="zombie">Zombie Purple</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label class="settings-label" for="font-select">Font:</label>
+                <select class="settings-select" id="font-select" onchange="changeFont(this.value)">
+                    <option value="comic">Comic Sans MS</option>
+                    <option value="arial">Arial</option>
+                    <option value="georgia">Georgia</option>
+                    <option value="verdana">Verdana</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label class="settings-label" for="font-size">Font Size:</label>
+                <input type="range" id="font-size" min="14" max="24" value="16" onchange="changeFontSize(this.value)">
+                <span id="font-size-value">16px</span>
+            </div>
+            <div class="settings-option">
+                <label class="settings-label">
+                    <input type="checkbox" id="auto-scroll" onchange="toggleAutoScroll(this.checked)">
+                    Enable Auto-scroll
+                </label>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('main-menu')">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Reviews Page -->
+    <div id="reviews-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Reviews</h2>
+        </div>
+        <div class="page-content">
+            <div class="character-card">
+                <p>"A delightful interactive experience that captures the charm of the original game!" - Plant Weekly</p>
+            </div>
+            <div class="character-card">
+                <p>"The choices are engaging and the humor is spot-on. My kids loved it!" - Parent Gaming Magazine</p>
+            </div>
+            <div class="character-card">
+                <p>"Finally, a story where plants are the heroes! My sunflowers have never been prouder." - Garden Enthusiast Digest</p>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('main-menu')">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Credits Page -->
+    <div id="credits-page" class="page">
+        <div class="page-header">
+            <h2 class="page-title">Credits</h2>
+        </div>
+        <div class="page-content">
+            <div class="character-card">
+                <p><strong>Project Curator:</strong> Sorena</p>
+                <p><strong>Writer:</strong> DeepSeek AI</p>
+                <p><strong>UI Designer:</strong> DeepSeek AI</p>
+                <p><strong>Director:</strong> DeepSeek AI</p>
+                <p><strong>Inspired by:</strong> Plants vs. Zombies by PopCap Games</p>
+            </div>
+            <p>Special thanks to all the plants and zombies who made this story possible!</p>
+        </div>
+        <div class="navigation">
+            <button class="nav-btn" onclick="showPage('main-menu')">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Floating Button -->
+    <button id="floating-btn" onclick="showPage('settings-page')">⚙️</button>
+
+    <script>
+        // Game state
+        const gameState = {
+            currentPage: 'loading-screen',
+            choices: [],
+            theme: 'default',
+            font: 'comic',
+            fontSize: 16,
+            autoScroll: false
+        };
+
+        // Initialize the game
+        window.onload = function() {
+            // Show loading screen for 5 seconds then transition to main menu
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-menu').style.display = 'flex';
+                gameState.currentPage = 'main-menu';
+            }, 5000);
+        };
+
+        // Show a specific page
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.getElementsByClassName('page');
+            for (let i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            
+            // Show the requested page
+            document.getElementById(pageId).classList.add('active');
+            gameState.currentPage = pageId;
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // Auto-scroll if enabled
+            if (gameState.autoScroll) {
+                setTimeout(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                }, 1000);
+            }
+        }
+
+        // Make a choice in the story
+        function makeChoice(chapter, choice) {
+            gameState.choices.push({chapter, choice});
+            
+            // For this demo, we'll just advance to the next chapter
+            // In a full implementation, this would branch the story
+            if (chapter === 1) {
+                showPage('story-page-2');
+            } else if (chapter === 2) {
+                // This would lead to different endings
+                alert('Your adventure continues! In the full version, this choice would lead to different story paths.');
+                showPage('main-menu');
+            }
+        }
+
+        // Change theme
+        function changeTheme(theme) {
+            gameState.theme = theme;
+            const root = document.documentElement;
+            
+            switch(theme) {
+                case 'dark':
+                    root.style.setProperty('--primary-color', '#2E7D32');
+                    root.style.setProperty('--secondary-color', '#FF6F00');
+                    root.style.setProperty('--accent-color', '#1B5E20');
+                    root.style.setProperty('--dark-color', '#1B5E20');
+                    root.style.setProperty('--light-color', '#A5D6A7');
+                    root.style.setProperty('--text-color', '#E0E0E0');
+                    root.style.setProperty('--background-color', '#121212');
+                    break;
+                case 'sunny':
+                    root.style.setProperty('--primary-color', '#FFC107');
+                    root.style.setProperty('--secondary-color', '#FF9800');
+                    root.style.setProperty('--accent-color', '#FFA000');
+                    root.style.setProperty('--dark-color', '#FF8F00');
+                    root.style.setProperty('--light-color', '#FFECB3');
+                    root.style.setProperty('--text-color', '#5D4037');
+                    root.style.setProperty('--background-color', '#FFFDE7');
+                    break;
+                case 'zombie':
+                    root.style.setProperty('--primary-color', '#7B1FA2');
+                    root.style.setProperty('--secondary-color', '#E91E63');
+                    root.style.setProperty('--accent-color', '#9C27B0');
+                    root.style.setProperty('--dark-color', '#6A1B9A');
+                    root.style.setProperty('--light-color', '#E1BEE7');
+                    root.style.setProperty('--text-color', '#FFFFFF');
+                    root.style.setProperty('--background-color', '#4A148C');
+                    break;
+                default:
+                    // Reset to default
+                    root.style.setProperty('--primary-color', '#8BC34A');
+                    root.style.setProperty('--secondary-color', '#FF9800');
+                    root.style.setProperty('--accent-color', '#4CAF50');
+                    root.style.setProperty('--dark-color', '#388E3C');
+                    root.style.setProperty('--light-color', '#C8E6C9');
+                    root.style.setProperty('--text-color', '#333');
+                    root.style.setProperty('--background-color', '#f5f5f5');
+            }
+        }
+
+        // Change font
+        function changeFont(font) {
+            gameState.font = font;
+            let fontFamily;
+            
+            switch(font) {
+                case 'arial':
+                    fontFamily = 'Arial, sans-serif';
+                    break;
+                case 'georgia':
+                    fontFamily = 'Georgia, serif';
+                    break;
+                case 'verdana':
+                    fontFamily = 'Verdana, sans-serif';
+                    break;
+                default:
+                    fontFamily = "'Comic Sans MS', cursive, sans-serif";
+            }
+            
+            document.body.style.fontFamily = fontFamily;
+        }
+
+        // Change font size
+        function changeFontSize(size) {
+            gameState.fontSize = size;
+            document.body.style.fontSize = size + 'px';
+            document.getElementById('font-size-value').textContent = size + 'px';
+        }
+
+        // Toggle auto-scroll
+        function toggleAutoScroll(enabled) {
+            gameState.autoScroll = enabled;
+        }
+
+        // Exit game
+        function exitGame() {
+            if (confirm('Are you sure you want to exit?')) {
+                // In a real implementation, this might close the window
+                // For this demo, we'll just go back to the loading screen
+                document.getElementById('main-menu').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
+                gameState.currentPage = 'loading-screen';
+                
+                // After a moment, show a goodbye message
+                setTimeout(() => {
+                    alert('Thanks for playing! Come back soon to continue your plant vs. zombie adventure!');
+                }, 1000);
+            }
+        }
+
+        // Print function
+        function printStory() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

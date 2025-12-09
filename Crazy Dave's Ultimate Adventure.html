@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Dave's Ultimate Adventure</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/parastoo-font@v1.0.3/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/tanha-font@v0.10/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/gandom-font@v0.5.1/dist/font-face.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8BC34A;
+            --secondary-color: #FF9800;
+            --accent-color: #4CAF50;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --header-height: 60px;
+            --footer-height: 40px;
+            --font-main: 'Vazirmatn', 'Sahel', sans-serif;
+            --font-title: 'Gandom', 'Vazirmatn', sans-serif;
+            --lawn-green: #87C159;
+            --lawn-dark-green: #6B9E3F;
+            --sun-yellow: #FFEB3B;
+            --pea-green: #4CAF50;
+            --zombie-green: #5D8C5D;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 12px 25px rgba(0, 0, 0, 0.2);
+            --transition-fast: 0.3s ease;
+            --transition-medium: 0.5s ease;
+            --transition-slow: 0.8s ease;
+        }
+
+        .theme-dark {
+            --primary-color: #689F38;
+            --secondary-color: #FF5722;
+            --accent-color: #388E3C;
+            --text-color: #f5f5f5;
+            --bg-color: #2E2E2E;
+            --card-bg: #424242;
+            --lawn-green: #5A7D3C;
+            --lawn-dark-green: #4A6531;
+        }
+
+        .theme-zombie {
+            --primary-color: #795548;
+            --secondary-color: #FF5722;
+            --accent-color: #5D4037;
+            --text-color: #f5f5f5;
+            --bg-color: #3E2723;
+            --card-bg: #5D4037;
+            --lawn-green: #5D4037;
+            --lawn-dark-green: #4E342E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all var(--transition-medium);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(135, 193, 89, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 152, 0, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(76, 175, 80, 0.1) 0%, transparent 30%);
+            background-size: 300px 300px, 400px 400px, 500px 500px;
+            background-attachment: fixed;
+        }
+
+        body.english {
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* Particle Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--sun-yellow) 0%, transparent 70%);
+            opacity: 0.6;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0.7;
+            }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Language Selection Screen */
+        #language-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, var(--lawn-green) 0%, var(--accent-color) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2387C159"/><path d="M0 0L100 100M100 0L0 100" stroke="%236B9E3F" stroke-width="2"/></svg>');
+            background-size: 200px 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+            overflow: hidden;
+        }
+
+        .language-title {
+            font-family: var(--font-title);
+            font-size: 3.5rem;
+            margin-bottom: 40px;
+            text-shadow: 3px 3px 0 #000, 5px 5px 0 rgba(0,0,0,0.3);
+            text-align: center;
+            animation: title-glow 2s infinite alternate;
+        }
+
+        @keyframes title-glow {
+            from {
+                text-shadow: 3px 3px 0 #000, 5px 5px 0 rgba(0,0,0,0.3);
+            }
+            to {
+                text-shadow: 3px 3px 0 #000, 5px 5px 0 rgba(0,0,0,0.3), 0 0 15px var(--sun-yellow);
+            }
+        }
+
+        .language-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 800px;
+        }
+
+        .language-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 320px;
+            text-align: center;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            overflow: hidden;
+            border: 5px solid transparent;
+        }
+
+        .language-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            z-index: -1;
+        }
+
+        .language-option:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--sun-yellow);
+        }
+
+        .language-option:hover::before {
+            opacity: 0.1;
+        }
+
+        .language-flag {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(2px 2px 0 #000);
+            transition: transform var(--transition-fast);
+        }
+
+        .language-option:hover .language-flag {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .language-name {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-family: var(--font-title);
+        }
+
+        .language-desc {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, var(--lawn-green) 0%, var(--accent-color) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2387C159"/><path d="M0 0L100 100M100 0L0 100" stroke="%236B9E3F" stroke-width="2"/></svg>');
+            background-size: 200px 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        .lawn-stripes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+        }
+
+        #loading-screen h1 {
+            font-family: var(--font-title);
+            font-size: 4rem;
+            margin-bottom: 15px;
+            text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+            color: var(--sun-yellow);
+            text-align: center;
+        }
+
+        #loading-screen h2 {
+            font-size: 2rem;
+            animation: fadeInOut 2s infinite;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 80%;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .loading-bar-container {
+            width: 500px;
+            height: 35px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            margin-top: 30px;
+            overflow: hidden;
+            border: 3px solid #000;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--sun-yellow), var(--secondary-color), var(--sun-yellow));
+            border-radius: 20px;
+            animation: loading 5s forwards;
+            position: relative;
+            overflow: hidden;
+            background-size: 200% 100%;
+            animation: loading 5s forwards, gradient-shift 3s infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: shine 1.5s infinite;
+        }
+
+        .zombie-head {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: var(--zombie-green);
+            border-radius: 50%;
+            top: -7px;
+            left: 0;
+            transform: translateX(-50%);
+            transition: left 5s linear;
+            z-index: 2;
+            border: 3px solid #000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .zombie-head::before, .zombie-head::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 15px;
+        }
+
+        .zombie-head::before {
+            left: 10px;
+        }
+
+        .zombie-head::after {
+            right: 10px;
+        }
+
+        .zombie-mouth {
+            position: absolute;
+            width: 25px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 0 0 12px 12px;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .loading-plants {
+            display: flex;
+            justify-content: space-between;
+            width: 500px;
+            margin-top: 20px;
+        }
+
+        .loading-plant {
+            font-size: 2.5rem;
+            opacity: 0;
+            animation: plant-appear 0.5s forwards;
+        }
+
+        @keyframes plant-appear {
+            to { opacity: 1; }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-25px); }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Menu */
+        #main-menu {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: var(--shadow-heavy);
+            margin-top: 20px;
+            border: 8px solid var(--lawn-dark-green);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        #main-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 235, 59, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(76, 175, 80, 0.1) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .logo {
+            font-family: var(--font-title);
+            font-size: 5.5rem;
+            color: var(--secondary-color);
+            text-shadow: 5px 5px 0 #000, 8px 8px 0 rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            animation: glow 2s infinite alternate, float 6s infinite ease-in-out;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 3px;
+        }
+
+        .logo-subtitle {
+            font-family: var(--font-main);
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin-top: -20px;
+            margin-bottom: 50px;
+            text-shadow: 1px 1px 0 #FFF;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes glow {
+            from { 
+                text-shadow: 5px 5px 0 #000, 8px 8px 0 rgba(0,0,0,0.3), 0 0 10px var(--sun-yellow); 
+            }
+            to { 
+                text-shadow: 5px 5px 0 #000, 8px 8px 0 rgba(0,0,0,0.3), 0 0 25px var(--sun-yellow), 0 0 40px var(--secondary-color); 
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 85%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-family: var(--font-main);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 8px 0 var(--lawn-dark-green), var(--shadow-medium);
+            position: relative;
+            z-index: 1;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            overflow: hidden;
+            gap: 10px;
+        }
+
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.7s;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 0 var(--lawn-dark-green), 0 20px 25px rgba(0,0,0,0.3);
+        }
+
+        .menu-button:hover::before {
+            left: 100%;
+        }
+
+        .menu-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 0 var(--lawn-dark-green), 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .menu-button i {
+            font-size: 1.6rem;
+        }
+
+        /* Story Screen */
+        #story-screen {
+            display: none;
+        }
+
+        .lawn-background {
+            background-color: var(--lawn-green);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            min-height: 600px;
+            border: 8px solid var(--lawn-dark-green);
+            overflow: hidden;
+        }
+
+        .lawn-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0,0,0,0.05) 19px,
+                    rgba(0,0,0,0.05) 20px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0,0,0,0.05) 19px,
+                    rgba(0,0,0,0.05) 20px
+                );
+            pointer-events: none;
+        }
+
+        .page-header {
+            text-align: center;
+            border-bottom: 4px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .page-header h2 {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 1.5px;
+        }
+
+        .page-content {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-light);
+            border: 3px solid var(--accent-color);
+            font-size: 1.2rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 1rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            background: rgba(255,255,255,0.8);
+            padding: 8px 15px;
+            border-radius: 15px;
+            z-index: 2;
+            box-shadow: var(--shadow-light);
+        }
+
+        body.english .page-number {
+            right: auto;
+            left: 30px;
+        }
+
+        .character-image {
+            float: right;
+            margin-left: 25px;
+            margin-bottom: 15px;
+            width: 140px;
+            height: 140px;
+            border-radius: 15px;
+            border: 4px solid var(--secondary-color);
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            box-shadow: var(--shadow-medium);
+            animation: character-float 5s infinite ease-in-out;
+        }
+
+        @keyframes character-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        body.english .character-image {
+            float: left;
+            margin-left: 0;
+            margin-right: 25px;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .choice-button {
+            padding: 18px;
+            background: linear-gradient(135deg, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: right;
+            box-shadow: 0 5px 0 #B71C1C, var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.english .choice-button {
+            text-align: left;
+        }
+
+        .choice-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.7s;
+        }
+
+        .choice-button:hover {
+            transform: translateX(-12px);
+            box-shadow: 0 7px 0 #B71C1C, 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        body.english .choice-button:hover {
+            transform: translateX(12px);
+        }
+
+        .choice-button:hover::before {
+            left: 100%;
+        }
+
+        .choice-button i {
+            font-size: 1.4rem;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .nav-button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            box-shadow: 0 5px 0 var(--lawn-dark-green), var(--shadow-light);
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 0 var(--lawn-dark-green), 0 12px 20px rgba(0,0,0,0.2);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 var(--lawn-dark-green), 0 6px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Settings */
+        #settings-screen {
+            display: none;
+        }
+
+        .setting-option {
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            border: 2px solid var(--primary-color);
+        }
+
+        .setting-option label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .setting-option select, .setting-option input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            background: white;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .setting-option input[type="range"] {
+            -webkit-appearance: none;
+            height: 18px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 12px;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .setting-option input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Floating Button */
+        .floating-button {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-heavy);
+            z-index: 100;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.english .floating-button {
+            right: auto;
+            left: 25px;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.15) rotate(-15deg);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        body.english .floating-button:hover {
+            transform: scale(1.15) rotate(15deg);
+        }
+
+        /* Credits Screen */
+        #credits-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .credits-content {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-medium);
+            border: 4px solid var(--primary-color);
+            text-align: right;
+            backdrop-filter: blur(5px);
+        }
+
+        body.english .credits-content {
+            text-align: left;
+        }
+
+        .credits-content h3 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 25px;
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .credits-content p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .credits-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color var(--transition-fast);
+        }
+
+        .credits-content a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        /* Table of Contents */
+        #toc-screen {
+            display: none;
+        }
+
+        .toc-item {
+            padding: 18px;
+            border-bottom: 3px solid var(--primary-color);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.8);
+            margin-bottom: 8px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-12px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        body.english .toc-item:hover {
+            transform: translateX(12px);
+        }
+
+        .toc-item i {
+            font-size: 1.4rem;
+        }
+
+        /* Stats Screen */
+        #stats-screen {
+            display: none;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.85);
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid var(--accent-color);
+            box-shadow: var(--shadow-light);
+        }
+
+        .stat-item {
+            text-align: center;
+            margin: 15px;
+            flex: 1 0 30%;
+            min-width: 170px;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            border: 2px solid var(--primary-color);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-top: 5px;
+        }
+
+        /* Plant and Zombie Animations */
+        .sun {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, var(--sun-yellow) 40%, #FFC107);
+            border-radius: 50%;
+            box-shadow: 0 0 25px var(--sun-yellow);
+            animation: float 10s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(180deg); }
+        }
+
+        .pea {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: var(--pea-green);
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        /* Ending Screen */
+        .ending-message {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin: 25px 0;
+            border: 4px solid var(--secondary-color);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .ending-title {
+            font-family: var(--font-title);
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        .ending-image {
+            font-size: 7rem;
+            margin: 25px 0;
+            animation: bounce 2s infinite;
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-weight: bold;
+            box-shadow: var(--shadow-medium);
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition-fast);
+        }
+
+        body.english .language-toggle {
+            right: auto;
+            left: 25px;
+        }
+
+        .language-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Font Selection */
+        .font-option {
+            display: inline-block;
+            width: 30%;
+            margin: 8px;
+            padding: 12px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-light);
+            border: 2px solid transparent;
+        }
+
+        .font-option:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-color);
+        }
+
+        .font-option.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .logo {
+                font-size: 3.5rem;
+            }
+            
+            .language-option {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .loading-bar-container {
+                width: 90%;
+            }
+            
+            .loading-plants {
+                width: 90%;
+            }
+            
+            .menu-button {
+                width: 95%;
+            }
+            
+            .character-image {
+                float: none;
+                margin: 0 auto 20px;
+                display: block;
+            }
+            
+            .stat-item {
+                flex: 1 0 45%;
+            }
+            
+            .font-option {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.8rem;
+            }
+            
+            .language-title {
+                font-size: 2.5rem;
+            }
+            
+            .page-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .stat-item {
+                flex: 1 0 100%;
+            }
+            
+            .font-option {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Selection Screen -->
+    <div id="language-screen">
+        <h1 class="language-title">Crazy Dave's Ultimate Adventure</h1>
+        <div class="language-options">
+            <div class="language-option" onclick="selectLanguage('fa')">
+                <div class="language-flag">🇮🇷</div>
+                <div class="language-name">فارسی</div>
+                <div class="language-desc">ماجراجویی دیوانه‌وار دیو</div>
+            </div>
+            <div class="language-option" onclick="selectLanguage('en')">
+                <div class="language-flag">🇺🇸</div>
+                <div class="language-name">English</div>
+                <div class="language-desc">Crazy Dave's Adventure</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="lawn-stripes"></div>
+        <h1>Crazy Dave's Ultimate Adventure</h1>
+        <h2 id="loading-text">Loading... Please wait!</h2>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+            <div class="zombie-head"></div>
+        </div>
+        <div class="loading-plants">
+            <div class="loading-plant" style="animation-delay: 0.5s;">🌻</div>
+            <div class="loading-plant" style="animation-delay: 1s;">🥬</div>
+            <div class="loading-plant" style="animation-delay: 1.5s;">🌰</div>
+            <div class="loading-plant" style="animation-delay: 2s;">🌶️</div>
+            <div class="loading-plant" style="animation-delay: 2.5s;">🍄</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Language Toggle Button -->
+        <button class="language-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i>
+            <span id="toggle-text">English</span>
+        </button>
+
+        <!-- Main Menu -->
+        <div id="main-menu">
+            <h1 class="logo">Crazy Dave's Ultimate Adventure</h1>
+            <p class="logo-subtitle" id="subtitle">A Plants vs. Zombies Interactive Story</p>
+            
+            <div class="menu-buttons">
+                <button class="menu-button" onclick="startGame()">
+                    <i class="fas fa-play"></i>
+                    <span id="start-button">شروع بازی</span>
+                </button>
+                <button class="menu-button" onclick="showScreen('toc-screen')">
+                    <i class="fas fa-book"></i>
+                    <span id="toc-button">فهرست مطالب</span>
+                </button>
+                <button class="menu-button" onclick="showScreen('stats-screen')">
+                    <i class="fas fa-chart-bar"></i>
+                    <span id="stats-button">آمار بازی</span>
+                </button>
+                <button class="menu-button" onclick="showScreen('settings-screen')">
+                    <i class="fas fa-cog"></i>
+                    <span id="settings-button">تنظیمات</span>
+                </button>
+                <button class="menu-button" onclick="showScreen('credits-screen')">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="credits-button">درباره بازی</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Story Screen -->
+        <div id="story-screen">
+            <div class="lawn-background">
+                <div class="sun" style="top: 50px; left: 80px;"></div>
+                <div class="sun" style="top: 120px; right: 100px;"></div>
+                
+                <div class="page-header">
+                    <h2 id="page-title">شروع ماجراجویی</h2>
+                </div>
+                
+                <div class="page-content">
+                    <div class="character-image">🌻</div>
+                    <p id="page-text">این داستان دیو دیوانه و ماجراجویی‌هایش در دنیای گیاهان در برابر زامبی‌ها است. شما در نقش دیو، باید تصمیمات مهمی بگیرید که سرنوشت باغ شما را تعیین می‌کند.</p>
+                    
+                    <div class="choices" id="choices-container">
+                        <!-- Choices will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="page-number" id="page-number">صفحه 1 از 20</div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="previousPage()">
+                        <i class="fas fa-arrow-right"></i>
+                        <span id="prev-button">صفحه قبل</span>
+                    </button>
+                    <button class="nav-button" onclick="nextPage()">
+                        <i class="fas fa-arrow-left"></i>
+                        <span id="next-button">صفحه بعد</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table of Contents Screen -->
+        <div id="toc-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2 id="toc-title">فهرست مطالب</h2>
+                </div>
+                
+                <div class="page-content">
+                    <div id="toc-list">
+                        <!-- Table of contents will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="showScreen('main-menu')">
+                        <i class="fas fa-home"></i>
+                        <span id="back-to-menu">بازگشت به منو</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Screen -->
+        <div id="stats-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2 id="stats-title">آمار بازی</h2>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-value" id="pages-read">0</div>
+                        <div class="stat-label">صفحات خوانده شده</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="choices-made">0</div>
+                        <div class="stat-label">انتخاب‌های انجام شده</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="play-time">0</div>
+                        <div class="stat-label">دقیقه بازی</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="endings-unlocked">0</div>
+                        <div class="stat-label">پایان‌های باز شده</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="zombies-defeated">0</div>
+                        <div class="stat-label">زامبی‌های شکست خورده</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="plants-collected">0</div>
+                        <div class="stat-label">گیاهان جمع‌آوری شده</div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="showScreen('main-menu')">
+                        <i class="fas fa-home"></i>
+                        <span>بازگشت به منو</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settings-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2 id="settings-title">تنظیمات</h2>
+                </div>
+                
+                <div class="page-content">
+                    <div class="setting-option">
+                        <label for="theme-select" id="theme-label">تم نمایش:</label>
+                        <select id="theme-select" onchange="changeTheme(this.value)">
+                            <option value="default">سبز (پیش‌فرض)</option>
+                            <option value="dark">تیره</option>
+                            <option value="zombie">زامبی</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <label id="font-label">فونت متن:</label>
+                        <div>
+                            <div class="font-option active" onclick="changeFont('Vazirmatn')">وزیرمتن</div>
+                            <div class="font-option" onclick="changeFont('Sahel')">ساحل</div>
+                            <div class="font-option" onclick="changeFont('Shabnam')">شبنم</div>
+                            <div class="font-option" onclick="changeFont('Parastoo')">پرستو</div>
+                            <div class="font-option" onclick="changeFont('Tanha')">تنها</div>
+                            <div class="font-option" onclick="changeFont('Gandom')">گندم</div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <label for="text-size" id="text-size-label">اندازه متن:</label>
+                        <input type="range" id="text-size" min="14" max="24" value="18" oninput="changeTextSize(this.value)">
+                        <div id="text-size-value">18px</div>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <label for="music-volume" id="music-label">صدای موسیقی:</label>
+                        <input type="range" id="music-volume" min="0" max="100" value="70" oninput="changeVolume(this.value, 'music')">
+                        <div id="music-volume-value">70%</div>
+                    </div>
+                    
+                    <div class="setting-option">
+                        <label for="sfx-volume" id="sfx-label">صدای افکت‌ها:</label>
+                        <input type="range" id="sfx-volume" min="0" max="100" value="80" oninput="changeVolume(this.value, 'sfx')">
+                        <div id="sfx-volume-value">80%</div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="showScreen('main-menu')">
+                        <i class="fas fa-home"></i>
+                        <span id="save-settings">ذخیره و بازگشت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credits Screen -->
+        <div id="credits-screen">
+            <div class="lawn-background">
+                <div class="page-header">
+                    <h2 id="credits-title">درباره بازی</h2>
+                </div>
+                
+                <div class="credits-content">
+                    <h3>Crazy Dave's Ultimate Adventure</h3>
+                    <p>این یک بازی داستانی تعاملی بر اساس دنیای Plants vs. Zombies است. شما در نقش دیو دیوانه، قهرمان بازی، باید از باغ خود در برابر هجوم زامبی‌ها محافظت کنید.</p>
+                    
+                    <h3>توسعه‌دهندگان</h3>
+                    <p>این بازی توسط تیمی از علاقه‌مندان به Plants vs. Zombies توسعه یافته است.</p>
+                    
+                    <h3>منابع استفاده شده</h3>
+                    <p>• فونت‌های فارسی: <a href="https://github.com/rastikerdar" target="_blank">راستی‌کردار</a></p>
+                    <p>• آیکون‌ها: <a href="https://fontawesome.com" target="_blank">Font Awesome</a></p>
+                    <p>• الهام‌گیری: بازی Plants vs. Zombies توسط PopCap Games</p>
+                    
+                    <h3>حقوق نشر</h3>
+                    <p>این پروژه یک اثر طرفدارانه و غیرانتفاعی است. تمام حقوق Plants vs. Zombies برای PopCap Games محفوظ است.</p>
+                    
+                    <h3>نسخه بازی</h3>
+                    <p>نسخه ۲.۰ - بهار ۱۴۰۳</p>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-button" onclick="showScreen('main-menu')">
+                        <i class="fas fa-home"></i>
+                        <span>بازگشت به منو</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Menu Button -->
+    <button class="floating-button" onclick="showScreen('main-menu')">
+        <i class="fas fa-home"></i>
+    </button>
+
+    <!-- Particle Background -->
+    <div class="particles" id="particles-container"></div>
+
+    <script>
+        // Game state
+        const gameState = {
+            currentPage: 1,
+            language: 'fa',
+            theme: 'default',
+            font: 'Vazirmatn',
+            textSize: 18,
+            musicVolume: 70,
+            sfxVolume: 80,
+            stats: {
+                pagesRead: 0,
+                choicesMade: 0,
+                playTime: 0,
+                endingsUnlocked: 0,
+                zombiesDefeated: 0,
+                plantsCollected: 0
+            },
+            visitedPages: new Set(),
+            startTime: Date.now()
+        };
+
+        // Story data
+        const storyData = {
+            pages: {
+                1: {
+                    title: {
+                        fa: "شروع ماجراجویی",
+                        en: "The Adventure Begins"
+                    },
+                    text: {
+                        fa: "صبح یکشنبه است و شما، دیو دیوانه، تازه از خواب بیدار شده‌اید. ناگهان متوجه صداهای عجیبی از بیرون می‌شوید. به پنجره نزدیک می‌شوید و منظره وحشتناکی را می‌بینید: زامبی‌ها به شهر حمله کرده‌اند! چه کاری انجام می‌دهید؟",
+                        en: "It's Sunday morning and you, Crazy Dave, have just woken up. Suddenly, you hear strange noises from outside. You approach the window and see a terrifying sight: zombies have attacked the town! What do you do?"
+                    },
+                    character: "🌻",
+                    choices: [
+                        {
+                            text: {
+                                fa: "بلافاصله به باغ می‌روید و گیاهان را آماده می‌کنید",
+                                en: "Immediately go to the garden and prepare the plants"
+                            },
+                            nextPage: 2
+                        },
+                        {
+                            text: {
+                                fa: "اول یک کاسه غلات می‌خورید چون گرسنه هستید",
+                                en: "First eat a bowl of cereal because you're hungry"
+                            },
+                            nextPage: 3
+                        },
+                        {
+                            text: {
+                                fa: "با پتزی (گربه‌تان) مشورت می‌کنید",
+                                en: "Consult with Patzy (your cat)"
+                            },
+                            nextPage: 4
+                        }
+                    ]
+                },
+                2: {
+                    title: {
+                        fa: "آماده‌سازی باغ",
+                        en: "Preparing the Garden"
+                    },
+                    text: {
+                        fa: "شما به سرعت به باغ می‌روید. گیاهان شما به نظر آماده نبرد هستند، اما شما باید استراتژی خود را انتخاب کنید. کدام گیاه را در خط اول دفاع قرار می‌دهید؟",
+                        en: "You quickly go to the garden. Your plants seem ready for battle, but you need to choose your strategy. Which plant do you place on the front line of defense?"
+                    },
+                    character: "🌰",
+                    choices: [
+                        {
+                            text: {
+                                fa: "گردوهای دفاعی - برای محافظت از گیاهان دیگر",
+                                en: "Defensive walnuts - to protect other plants"
+                            },
+                            nextPage: 5
+                        },
+                        {
+                            text: {
+                                fa: "گیاهان تیرانداز - برای حمله از راه دور",
+                                en: "Shooter plants - for long-range attacks"
+                            },
+                            nextPage: 6
+                        },
+                        {
+                            text: {
+                                fa: "گیاهان انفجاری - برای نابودی گروهی زامبی‌ها",
+                                en: "Explosive plants - for mass zombie destruction"
+                            },
+                            nextPage: 7
+                        }
+                    ]
+                },
+                // Additional pages would be defined here...
+                20: {
+                    title: {
+                        fa: "پیروزی نهایی",
+                        en: "Final Victory"
+                    },
+                    text: {
+                        fa: "تبریک! شما با موفقیت از باغ خود محافظت کردید و زامبی‌ها را شکست دادید. دیو دیوانه یک بار دیگر روز را نجات داده است! اما این فقط آغاز ماجراجویی‌های جدید است...",
+                        en: "Congratulations! You have successfully protected your garden and defeated the zombies. Crazy Dave has saved the day once again! But this is only the beginning of new adventures..."
+                    },
+                    character: "🏆",
+                    choices: [
+                        {
+                            text: {
+                                fa: "بازگشت به منوی اصلی",
+                                en: "Return to main menu"
+                            },
+                            action: "menu"
+                        }
+                    ]
+                }
+            }
+        };
+
+        // Initialize the game
+        function initGame() {
+            // Set up particles
+            createParticles();
+            
+            // Load saved game state
+            loadGameState();
+            
+            // Update all text based on current language
+            updateAllText();
+            
+            // Apply current theme
+            applyTheme(gameState.theme);
+            
+            // Apply current font
+            applyFont(gameState.font);
+            
+            // Start play time counter
+            setInterval(updatePlayTime, 60000);
+        }
+
+        // Language selection
+        function selectLanguage(lang) {
+            gameState.language = lang;
+            document.body.classList.toggle('english', lang === 'en');
+            
+            // Hide language screen and show loading
+            document.getElementById('language-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'flex';
+            
+            // Update loading text
+            document.getElementById('loading-text').textContent = 
+                lang === 'fa' ? 'در حال بارگذاری... لطفا صبر کنید!' : 'Loading... Please wait!';
+            
+            // Simulate loading
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-menu').style.display = 'block';
+                updateAllText();
+            }, 5000);
+        }
+
+        // Toggle language
+        function toggleLanguage() {
+            gameState.language = gameState.language === 'fa' ? 'en' : 'fa';
+            document.body.classList.toggle('english', gameState.language === 'en');
+            updateAllText();
+            saveGameState();
+        }
+
+        // Update all text elements based on current language
+        function updateAllText() {
+            // Update toggle button
+            document.getElementById('toggle-text').textContent = 
+                gameState.language === 'fa' ? 'English' : 'فارسی';
+            
+            // Update main menu
+            document.getElementById('subtitle').textContent = 
+                gameState.language === 'fa' ? 'یک داستان تعاملی Plants vs. Zombies' : 'A Plants vs. Zombies Interactive Story';
+            
+            document.getElementById('start-button').textContent = 
+                gameState.language === 'fa' ? 'شروع بازی' : 'Start Game';
+            
+            document.getElementById('toc-button').textContent = 
+                gameState.language === 'fa' ? 'فهرست مطالب' : 'Table of Contents';
+            
+            document.getElementById('stats-button').textContent = 
+                gameState.language === 'fa' ? 'آمار بازی' : 'Game Stats';
+            
+            document.getElementById('settings-button').textContent = 
+                gameState.language === 'fa' ? 'تنظیمات' : 'Settings';
+            
+            document.getElementById('credits-button').textContent = 
+                gameState.language === 'fa' ? 'درباره بازی' : 'About';
+            
+            // Update navigation buttons
+            document.getElementById('prev-button').textContent = 
+                gameState.language === 'fa' ? 'صفحه قبل' : 'Previous';
+            
+            document.getElementById('next-button').textContent = 
+                gameState.language === 'fa' ? 'صفحه بعد' : 'Next';
+            
+            document.getElementById('back-to-menu').textContent = 
+                gameState.language === 'fa' ? 'بازگشت به منو' : 'Back to Menu';
+            
+            // Update settings
+            document.getElementById('theme-label').textContent = 
+                gameState.language === 'fa' ? 'تم نمایش:' : 'Theme:';
+            
+            document.getElementById('font-label').textContent = 
+                gameState.language === 'fa' ? 'فونت متن:' : 'Text Font:';
+            
+            document.getElementById('text-size-label').textContent = 
+                gameState.language === 'fa' ? 'اندازه متن:' : 'Text Size:';
+            
+            document.getElementById('music-label').textContent = 
+                gameState.language === 'fa' ? 'صدای موسیقی:' : 'Music Volume:';
+            
+            document.getElementById('sfx-label').textContent = 
+                gameState.language === 'fa' ? 'صدای افکت‌ها:' : 'SFX Volume:';
+            
+            document.getElementById('save-settings').textContent = 
+                gameState.language === 'fa' ? 'ذخیره و بازگشت' : 'Save & Return';
+            
+            // Update titles
+            document.getElementById('toc-title').textContent = 
+                gameState.language === 'fa' ? 'فهرست مطالب' : 'Table of Contents';
+            
+            document.getElementById('stats-title').textContent = 
+                gameState.language === 'fa' ? 'آمار بازی' : 'Game Stats';
+            
+            document.getElementById('settings-title').textContent = 
+                gameState.language === 'fa' ? 'تنظیمات' : 'Settings';
+            
+            document.getElementById('credits-title').textContent = 
+                gameState.language === 'fa' ? 'درباره بازی' : 'About the Game';
+            
+            // Update current page if in story
+            if (document.getElementById('story-screen').style.display !== 'none') {
+                updatePage();
+            }
+            
+            // Update table of contents if visible
+            if (document.getElementById('toc-screen').style.display !== 'none') {
+                updateTableOfContents();
+            }
+            
+            // Update stats if visible
+            if (document.getElementById('stats-screen').style.display !== 'none') {
+                updateStats();
+            }
+        }
+
+        // Show a specific screen
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = ['main-menu', 'story-screen', 'toc-screen', 'stats-screen', 'settings-screen', 'credits-screen'];
+            screens.forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+            
+            // Show the requested screen
+            document.getElementById(screenId).style.display = 'block';
+            
+            // Update content if needed
+            if (screenId === 'toc-screen') {
+                updateTableOfContents();
+            } else if (screenId === 'stats-screen') {
+                updateStats();
+            } else if (screenId === 'story-screen') {
+                updatePage();
+            }
+        }
+
+        // Start the game
+        function startGame() {
+            gameState.currentPage = 1;
+            showScreen('story-screen');
+            updatePage();
+        }
+
+        // Update the current page
+        function updatePage() {
+            const page = storyData.pages[gameState.currentPage];
+            if (!page) return;
+            
+            // Update page content
+            document.getElementById('page-title').textContent = page.title[gameState.language];
+            document.getElementById('page-text').textContent = page.text[gameState.language];
+            document.querySelector('.character-image').textContent = page.character;
+            
+            // Update page number
+            document.getElementById('page-number').textContent = 
+                gameState.language === 'fa' ? 
+                `صفحه ${gameState.currentPage} از ${Object.keys(storyData.pages).length}` :
+                `Page ${gameState.currentPage} of ${Object.keys(storyData.pages).length}`;
+            
+            // Update choices
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+            
+            page.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+                button.innerHTML = `
+                    <span>${choice.text[gameState.language]}</span>
+                    <i class="fas fa-arrow-left"></i>
+                `;
+                
+                button.onclick = () => makeChoice(choice);
+                choicesContainer.appendChild(button);
+            });
+            
+            // Update stats
+            if (!gameState.visitedPages.has(gameState.currentPage)) {
+                gameState.visitedPages.add(gameState.currentPage);
+                gameState.stats.pagesRead++;
+                saveGameState();
+            }
+        }
+
+        // Make a choice
+        function makeChoice(choice) {
+            gameState.stats.choicesMade++;
+            
+            if (choice.nextPage) {
+                gameState.currentPage = choice.nextPage;
+                updatePage();
+            } else if (choice.action === 'menu') {
+                showScreen('main-menu');
+            }
+            
+            saveGameState();
+        }
+
+        // Navigate to next page
+        function nextPage() {
+            if (gameState.currentPage < Object.keys(storyData.pages).length) {
+                gameState.currentPage++;
+                updatePage();
+            }
+        }
+
+        // Navigate to previous page
+        function previousPage() {
+            if (gameState.currentPage > 1) {
+                gameState.currentPage--;
+                updatePage();
+            }
+        }
+
+        // Update table of contents
+        function updateTableOfContents() {
+            const tocList = document.getElementById('toc-list');
+            tocList.innerHTML = '';
+            
+            Object.keys(storyData.pages).forEach(pageNum => {
+                const page = storyData.pages[pageNum];
+                const item = document.createElement('div');
+                item.className = 'toc-item';
+                item.innerHTML = `
+                    <i class="fas fa-book"></i>
+                    <span>${page.title[gameState.language]}</span>
+                `;
+                
+                item.onclick = () => {
+                    gameState.currentPage = parseInt(pageNum);
+                    showScreen('story-screen');
+                    updatePage();
+                };
+                
+                tocList.appendChild(item);
+            });
+        }
+
+        // Update stats display
+        function updateStats() {
+            document.getElementById('pages-read').textContent = gameState.stats.pagesRead;
+            document.getElementById('choices-made').textContent = gameState.stats.choicesMade;
+            document.getElementById('play-time').textContent = gameState.stats.playTime;
+            document.getElementById('endings-unlocked').textContent = gameState.stats.endingsUnlocked;
+            document.getElementById('zombies-defeated').textContent = gameState.stats.zombiesDefeated;
+            document.getElementById('plants-collected').textContent = gameState.stats.plantsCollected;
+        }
+
+        // Update play time
+        function updatePlayTime() {
+            gameState.stats.playTime++;
+            saveGameState();
+        }
+
+        // Change theme
+        function changeTheme(theme) {
+            gameState.theme = theme;
+            applyTheme(theme);
+            saveGameState();
+        }
+
+        // Apply theme to the page
+        function applyTheme(theme) {
+            document.body.className = '';
+            if (theme !== 'default') {
+                document.body.classList.add(`theme-${theme}`);
+            }
+        }
+
+        // Change font
+        function changeFont(font) {
+            gameState.font = font;
+            applyFont(font);
+            
+            // Update active font option
+            document.querySelectorAll('.font-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            saveGameState();
+        }
+
+        // Apply font to the page
+        function applyFont(font) {
+            document.body.style.fontFamily = `'${font}', sans-serif`;
+        }
+
+        // Change text size
+        function changeTextSize(size) {
+            gameState.textSize = parseInt(size);
+            document.documentElement.style.setProperty('--font-size-base', `${size}px`);
+            document.getElementById('text-size-value').textContent = `${size}px`;
+            saveGameState();
+        }
+
+        // Change volume
+        function changeVolume(value, type) {
+            if (type === 'music') {
+                gameState.musicVolume = parseInt(value);
+                document.getElementById('music-volume-value').textContent = `${value}%`;
+            } else {
+                gameState.sfxVolume = parseInt(value);
+                document.getElementById('sfx-volume-value').textContent = `${value}%`;
+            }
+            saveGameState();
+        }
+
+        // Create particle background
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 20 + 5;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 15;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Save game state to localStorage
+        function saveGameState() {
+            localStorage.setItem('crazyDaveAdventure', JSON.stringify(gameState));
+        }
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('crazyDaveAdventure');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                Object.assign(gameState, savedState);
+                
+                // Restore settings
+                document.getElementById('theme-select').value = gameState.theme;
+                document.getElementById('text-size').value = gameState.textSize;
+                document.getElementById('text-size-value').textContent = `${gameState.textSize}px`;
+                document.getElementById('music-volume').value = gameState.musicVolume;
+                document.getElementById('music-volume-value').textContent = `${gameState.musicVolume}%`;
+                document.getElementById('sfx-volume').value = gameState.sfxVolume;
+                document.getElementById('sfx-volume-value').textContent = `${gameState.sfxVolume}%`;
+                
+                // Update play time based on saved start time
+                if (gameState.startTime) {
+                    const currentTime = Date.now();
+                    const elapsedMinutes = Math.floor((currentTime - gameState.startTime) / 60000);
+                    gameState.stats.playTime += elapsedMinutes;
+                } else {
+                    gameState.startTime = Date.now();
+                }
+            }
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>

@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Dave's Adventure</title>
+    <style>
+        :root {
+            --primary-color: #8BC34A;
+            --secondary-color: #FF9800;
+            --accent-color: #4CAF50;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --header-height: 60px;
+            --footer-height: 40px;
+            --font-main: 'Comic Sans MS', cursive, sans-serif;
+            --font-title: 'Bangers', cursive, sans-serif;
+            --lawn-green: #87C159;
+            --lawn-dark-green: #6B9E3F;
+            --sun-yellow: #FFEB3B;
+            --pea-green: #4CAF50;
+            --zombie-green: #5D8C5D;
+        }
+
+        .theme-dark {
+            --primary-color: #689F38;
+            --secondary-color: #FF5722;
+            --accent-color: #388E3C;
+            --text-color: #f5f5f5;
+            --bg-color: #2E2E2E;
+            --card-bg: #424242;
+            --lawn-green: #5A7D3C;
+            --lawn-dark-green: #4A6531;
+        }
+
+        .theme-zombie {
+            --primary-color: #795548;
+            --secondary-color: #FF5722;
+            --accent-color: #5D4037;
+            --text-color: #f5f5f5;
+            --bg-color: #3E2723;
+            --card-bg: #5D4037;
+            --lawn-green: #5D4037;
+            --lawn-dark-green: #4E342E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%2387C159"/><path d="M0 0L100 100M100 0L0 100" stroke="%236B9E3F" stroke-width="2"/></svg>');
+            background-size: 200px 200px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--lawn-green) 0%, var(--accent-color) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        .lawn-stripes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+        }
+
+        #loading-screen h1 {
+            font-family: var(--font-title);
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0 #000;
+            animation: bounce 2s infinite;
+            color: var(--sun-yellow);
+        }
+
+        #loading-screen h2 {
+            font-size: 1.8rem;
+            animation: fadeInOut 2s infinite;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .loading-bar-container {
+            width: 400px;
+            height: 30px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-top: 20px;
+            overflow: hidden;
+            border: 2px solid #000;
+            position: relative;
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--sun-yellow), var(--secondary-color));
+            border-radius: 15px;
+            animation: loading 5s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 1.5s infinite;
+        }
+
+        .zombie-head {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: var(--zombie-green);
+            border-radius: 50%;
+            top: -5px;
+            left: 0;
+            transform: translateX(-50%);
+            transition: left 5s linear;
+            z-index: 2;
+            border: 2px solid #000;
+        }
+
+        .zombie-head::before, .zombie-head::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 12px;
+        }
+
+        .zombie-head::before {
+            left: 8px;
+        }
+
+        .zombie-head::after {
+            right: 8px;
+        }
+
+        .zombie-mouth {
+            position: absolute;
+            width: 20px;
+            height: 8px;
+            background-color: #000;
+            border-radius: 0 0 10px 10px;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Menu */
+        #main-menu {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            border: 5px solid var(--lawn-dark-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #main-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="%23FFEB3B" opacity="0.1"/></svg>');
+            z-index: 0;
+        }
+
+        .logo {
+            font-family: var(--font-title);
+            font-size: 5rem;
+            color: var(--secondary-color);
+            text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            animation: glow 2s infinite alternate;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .logo-subtitle {
+            font-family: var(--font-main);
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-top: -20px;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 0 #FFF;
+        }
+
+        @keyframes glow {
+            from { 
+                text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.2), 0 0 10px var(--sun-yellow); 
+            }
+            to { 
+                text-shadow: 4px 4px 0 #000, 6px 6px 0 rgba(0,0,0,0.2), 0 0 20px var(--sun-yellow), 0 0 30px var(--secondary-color); 
+            }
+        }
+
+        .menu-button {
+            display: block;
+            width: 80%;
+            max-width: 350px;
+            margin: 15px auto;
+            padding: 18px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: var(--font-main);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 0 var(--lawn-dark-green), 0 10px 20px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 0 var(--lawn-dark-green), 0 15px 20px rgba(0,0,0,0.3);
+        }
+
+        .menu-button:hover::before {
+            left: 100%;
+        }
+
+        .menu-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 var(--lawn-dark-green), 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Story Screen */
+        #story-screen {
+            display: none;
+        }
+
+        .lawn-background {
+            background-color: var(--lawn-green);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            min-height: 500px;
+            border: 5px solid var(--lawn-dark-green);
+            overflow: hidden;
+        }
+
+        .lawn-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0,0,0,0.05) 19px,
+                    rgba(0,0,0,0.05) 20px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 19px,
+                    rgba(0,0,0,0.05) 19px,
+                    rgba(0,0,0,0.05) 20px
+                );
+            pointer-events: none;
+        }
+
+        .page-header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .page-header h2 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 0 #000;
+            letter-spacing: 1px;
+        }
+
+        .page-content {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid var(--accent-color);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            background: rgba(255,255,255,0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .character-image {
+            float: left;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            border: 3px solid var(--secondary-color);
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .choice-button {
+            padding: 15px;
+            background: linear-gradient(to bottom, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            box-shadow: 0 4px 0 #B71C1C;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .choice-button:hover {
+            transform: translateX(10px);
+            box-shadow: 0 6px 0 #B71C1C;
+        }
+
+        .choice-button:hover::before {
+            left: 100%;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            background: linear-gradient(to bottom, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            box-shadow: 0 4px 0 var(--lawn-dark-green);
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0 var(--lawn-dark-green);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 var(--lawn-dark-green);
+        }
+
+        /* Settings */
+        #settings-screen {
+            display: none;
+        }
+
+        .setting-option {
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .setting-option label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .setting-option select, .setting-option input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            font-family: var(--font-main);
+            font-size: 1rem;
+        }
+
+        .setting-option input[type="range"] {
+            -webkit-appearance: none;
+            height: 15px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .setting-option input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #000;
+        }
+
+        /* Floating Button */
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, var(--secondary-color), #E65100);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Credits Screen */
+        #credits-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .credits-content {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 25px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid var(--primary-color);
+            text-align: left;
+        }
+
+        .credits-content h3 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: var(--font-title);
+            font-size: 2rem;
+        }
+
+        .credits-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .credits-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .credits-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Table of Contents */
+        #toc-screen {
+            display: none;
+        }
+
+        .toc-item {
+            padding: 15px;
+            border-bottom: 2px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.7);
+            margin-bottom: 5px;
+            border-radius: 8px;
+        }
+
+        .toc-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(10px);
+        }
+
+        /* Stats Screen */
+        #stats-screen {
+            display: none;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid var(--accent-color);
+        }
+
+        .stat-item {
+            text-align: center;
+            margin: 10px;
+            flex: 1 0 30%;
+            min-width: 150px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        /* Plant and Zombie Animations */
+        .sun {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--sun-yellow) 40%, #FFC107);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--sun-yellow);
+            animation: float 10s infinite ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .pea {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--pea-green);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Ending Screen */
+        .ending-message {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 3px solid var(--secondary-color);
+        }
+
+        .ending-title {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .ending-image {
+            font-size: 6rem;
+            margin: 20px 0;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #story-screen, #story-screen * {
+                visibility: visible;
+            }
+            #story-screen {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .navigation, .floating-button {
+                display: none !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .logo {
+                font-size: 3.5rem;
+            }
+            .lawn-background {
+                padding: 15px;
+            }
+            .character-image {
+                float: none;
+                margin: 0 auto 15px;
+                display: block;
+            }
+            .menu-button {
+                width: 90%;
+                padding: 15px;
+            }
+            .stats-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            .logo-subtitle {
+                font-size: 1.2rem;
+            }
+            .page-header h2 {
+                font-size: 1.8rem;
+            }
+            .page-content {
+                padding: 15px;
+            }
+            .ending-title {
+                font-size: 2rem;
+            }
+            .ending-image {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="lawn-stripes"></div>
+        <h1>Crazy Dave's Adventure</h1>
+        <h2>A Fan Made Text Base Game</h2>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+            <div class="zombie-head"></div>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" class="container" style="display: none;">
+        <div class="logo">Crazy Dave's Adventure</div>
+        <div class="logo-subtitle">A Fan Made Text Base Game</div>
+        <button class="menu-button" onclick="startNewGame()">Start New Adventure</button>
+        <button class="menu-button" onclick="continueGame()">Continue Adventure</button>
+        <button class="menu-button" onclick="showScreen('toc-screen')">Table of Contents</button>
+        <button class="menu-button" onclick="showScreen('stats-screen')">Player Stats</button>
+        <button class="menu-button" onclick="showScreen('settings-screen')">Settings</button>
+        <button class="menu-button" onclick="showScreen('credits-screen')">Credits</button>
+        <button class="menu-button" onclick="exitApp()">Exit</button>
+        
+        <!-- Decorative suns -->
+        <div class="sun" style="top: 10%; left: 10%;"></div>
+        <div class="sun" style="top: 20%; right: 15%;"></div>
+        <div class="sun" style="bottom: 15%; left: 20%;"></div>
+    </div>
+
+    <!-- Story Screen -->
+    <div id="story-screen" class="container">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2 id="story-title">Chapter 1: The Zombie Invasion Begins!</h2>
+            </div>
+            <div class="stats-container" id="current-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-sun">0</div>
+                    <div class="stat-label">Sun Power</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-zombies">0</div>
+                    <div class="stat-label">Zombies Defeated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-plants">0</div>
+                    <div class="stat-label">Plants Planted</div>
+                </div>
+            </div>
+            <div class="page-content" id="story-content">
+                <div class="character-image">🌻</div>
+                <p>Welcome to Neighborville, the most peaceful town in the whole world! The sun is shining, birds are singing, and flowers are blooming everywhere. But wait... what's that strange groaning sound?</p>
+                <p>Oh no! Zombies are coming from the west! They're slowly shuffling toward your house, and they look hungry... for brains!</p>
+                <p>Suddenly, your eccentric neighbor Crazy Dave appears in his souped-up convertible. "Waffles! We need plants! Hungry plants!" he shouts, tossing you a packet of seeds.</p>
+                <p>What do you do first?</p>
+            </div>
+            <div class="choices" id="story-choices">
+                <button class="choice-button" onclick="makeChoice(1)">Plant Sunflowers to collect sunshine for more plants</button>
+                <button class="choice-button" onclick="makeChoice(2)">Immediately plant Peashooters to defend against the first zombie</button>
+                <button class="choice-button" onclick="makeChoice(3)">Search for Crazy Dave to ask for more advice</button>
+            </div>
+            <div class="page-number">Page <span id="current-page">1</span></div>
+            
+            <!-- Decorative elements -->
+            <div class="sun" style="top: 50px; right: 50px;"></div>
+            <div class="pea" style="top: 120px; left: 100px;"></div>
+            <div class="pea" style="top: 180px; left: 150px;"></div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="previousPage()">Previous</button>
+            <button class="nav-button" onclick="saveGame()">Save Game</button>
+            <button class="nav-button" onclick="nextPage()">Next</button>
+        </div>
+    </div>
+
+    <!-- Stats Screen -->
+    <div id="stats-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>Player Statistics</h2>
+            </div>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-sun">0</div>
+                    <div class="stat-label">Total Sun Collected</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-zombies">0</div>
+                    <div class="stat-label">Total Zombies Defeated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-plants">0</div>
+                    <div class="stat-label">Total Plants Planted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-choices">0</div>
+                    <div class="stat-label">Decisions Made</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-pages">0</div>
+                    <div class="stat-label">Pages Read</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="game-score">0</div>
+                    <div class="stat-label">Adventure Score</div>
+                </div>
+            </div>
+            <div class="page-content">
+                <h3>Plant Collection</h3>
+                <div id="plant-collection">
+                    <!-- Plant collection will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div id="toc-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>Table of Contents</h2>
+            </div>
+            <div class="page-content">
+                <div class="toc-item" onclick="goToPage(0)">Preface: The Calm Before the Storm</div>
+                <div class="toc-item" onclick="goToPage(1)">Introduction: Meet Crazy Dave</div>
+                <div class="toc-item" onclick="goToPage(2)">Chapter 1: The Zombie Invasion Begins!</div>
+                <div class="toc-item" onclick="goToPage(3)">Chapter 2: Meeting the Plant Army</div>
+                <div class="toc-item" onclick="goToPage(4)">Chapter 3: Your First Defense Line</div>
+                <div class="toc-item" onclick="goToPage(5)">Chapter 4: The Wall-nut Strategy</div>
+                <div class="toc-item" onclick="goToPage(6)">Chapter 5: Cherry Bomb Surprise</div>
+                <div class="toc-item" onclick="goToPage(7)">Chapter 6: The Night Shift Begins</div>
+                <div class="toc-item" onclick="goToPage(8)">Chapter 7: Mushroom Allies</div>
+                <div class="toc-item" onclick="goToPage(9)">Chapter 8: Pool Defense Tactics</div>
+                <div class="toc-item" onclick="goToPage(10)">Chapter 9: The Roof Finale</div>
+                <div class="toc-item" onclick="goToPage(11)">Chapter 10: Dr. Zomboss's Revenge</div>
+                <div class="toc-item" onclick="goToPage(12)">Epilogue: A Hero's Reward</div>
+                <div class="toc-item" onclick="goToPage(13)">Bonus Chapter: The Secret Garden</div>
+                <div class="toc-item" onclick="goToPage(14)">Reviews and Critiques</div>
+                <div class="toc-item" onclick="goToPage(15)">Acknowledgments</div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>Settings</h2>
+            </div>
+            <div class="page-content">
+                <div class="setting-option">
+                    <label for="theme-select">Theme:</label>
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="default">Default (Green)</option>
+                        <option value="dark">Dark Mode</option>
+                        <option value="zombie">Zombie Theme</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="font-size">Font Size:</label>
+                    <input type="range" id="font-size" min="14" max="24" value="16" onchange="changeFontSize(this.value)">
+                </div>
+                <div class="setting-option">
+                    <label for="auto-scroll">Auto Scroll:</label>
+                    <input type="checkbox" id="auto-scroll" onchange="toggleAutoScroll(this.checked)">
+                </div>
+                <div class="setting-option">
+                    <label for="sound-effects">Sound Effects:</label>
+                    <input type="checkbox" id="sound-effects" checked onchange="toggleSoundEffects(this.checked)">
+                </div>
+                <div class="setting-option">
+                    <button class="menu-button" onclick="resetGame()" style="background: linear-gradient(to bottom, #f44336, #d32f2f);">Reset Game Progress</button>
+                </div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Credits Screen -->
+    <div id="credits-screen" class="container" style="display: none;">
+        <div class="lawn-background">
+            <div class="page-header">
+                <h2>Credits</h2>
+            </div>
+            <div class="credits-content">
+                <h3>Plants vs. Zombies: Crazy Dave's Adventure</h3>
+                <p>An interactive storybook experience based on the popular game Plants vs. Zombies by PopCap Games.</p>
+                
+                <h3>Development Team</h3>
+                <p><strong>Story & Design:</strong> Sorena</p>
+                <p><strong>Programming:</strong>AI</p>
+                <p><strong>Art Direction:</strong>Deepseek</p>
+                
+                <h3>Special Thanks</h3>
+                <p>To the original creators of Plants vs. Zombies for inspiring this project.</p>
+                <p>To all the plants who bravely gave their petals to defend our lawns.</p>
+                <p>To the zombies, for being such persistent (if slow-moving) adversaries.</p>
+                <p>And to you, the player, for joining this crazy adventure!</p>
+                
+                <h3>Disclaimer</h3>
+                <p>This is a fan-made project created for educational and entertainment purposes. Plants vs. Zombies is a trademark of PopCap Games, Inc. This project is not officially affiliated with or endorsed by PopCap Games.</p>
+                
+                <h3>Contact</h3>
+                <p>If you enjoyed this interactive story, feel free to share it with your friends!</p>
+            </div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" onclick="showScreen('main-menu')">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-button" onclick="toggleMenu()">☰</button>
+
+    <script>
+        // Game state
+        const gameState = {
+            currentPage: 0,
+            sunCollected: 0,
+            zombiesDefeated: 0,
+            plantsPlanted: 0,
+            totalChoices: 0,
+            totalPagesRead: 0,
+            plantCollection: [],
+            gameScore: 0,
+            savedGames: [],
+            currentTheme: 'default',
+            autoScroll: false,
+            soundEffects: true
+        };
+
+        // Story data
+        const storyPages = [
+            {
+                title: "Preface: The Calm Before the Storm",
+                content: `
+                    <div class="character-image">🏡</div>
+                    <p>Once upon a time, in a quiet little neighborhood called Neighborville, life was perfect. The grass was always green, the sun always shone, and the birds always sang sweet melodies.</p>
+                    <p>You lived in a cozy little house with a beautiful garden. Every morning, you'd water your plants, watch the butterflies, and enjoy a peaceful breakfast on your porch.</p>
+                    <p>But little did you know, strange things were happening at the edge of town. People reported seeing... unusual figures... shuffling around at night. Some said they were just sleepwalkers. Others thought they were college students after a long night of studying.</p>
+                    <p>They were wrong. Very, very wrong.</p>
+                `,
+                choices: [
+                    { text: "Continue to the introduction", nextPage: 1 }
+                ]
+            },
+            {
+                title: "Introduction: Meet Crazy Dave",
+                content: `
+                    <div class="character-image">🧔</div>
+                    <p>Your next-door neighbor is a man named Dave. But everyone calls him Crazy Dave. He wears a saucepan on his head, speaks in riddles, and is always talking about waffles.</p>
+                    <p>Most people think he's... well, crazy. But you've always suspected there's more to Dave than meets the eye. He has the most amazing garden you've ever seen, with plants that do things normal plants shouldn't be able to do.</p>
+                    <p>One sunny afternoon, as you're watering your petunias, Dave comes running over. "The zombies are coming! The zombies are coming!" he shouts, waving his arms wildly.</p>
+                    <p>You look around. Nothing seems out of the ordinary. "Dave," you say patiently, "there are no zombies."</p>
+                    <p>Dave shakes his head, his saucepan wobbling precariously. "Not yet! But soon! We need to prepare! Do you like waffles? I like waffles."</p>
+                `,
+                choices: [
+                    { text: "Humour Dave and ask about his 'zombie plan'", nextPage: 2 },
+                    { text: "Politely excuse yourself and go back inside", nextPage: 2, special: "missedOpportunity" },
+                    { text: "Ask Dave if he's been getting enough sleep", nextPage: 2, special: "skeptical" }
+                ]
+            },
+            {
+                title: "Chapter 1: The Zombie Invasion Begins!",
+                content: `
+                    <div class="character-image">🌻</div>
+                    <p>Welcome to Neighborville, the most peaceful town in the whole world! The sun is shining, birds are singing, and flowers are blooming everywhere. But wait... what's that strange groaning sound?</p>
+                    <p>Oh no! Zombies are coming from the west! They're slowly shuffling toward your house, and they look hungry... for brains!</p>
+                    <p>Suddenly, your eccentric neighbor Crazy Dave appears in his souped-up convertible. "Waffles! We need plants! Hungry plants!" he shouts, tossing you a packet of seeds.</p>
+                    <p>What do you do first?</p>
+                `,
+                choices: [
+                    { text: "Plant Sunflowers to collect sunshine for more plants", nextPage: 3, effect: { sun: 25 } },
+                    { text: "Immediately plant Peashooters to defend against the first zombie", nextPage: 3, effect: { plants: 1, zombies: 1 } },
+                    { text: "Search for Crazy Dave to ask for more advice", nextPage: 3, effect: { sun: 10 } }
+                ]
+            },
+            {
+                title: "Chapter 2: Meeting the Plant Army",
+                content: `
+                    <div class="character-image">🌱</div>
+                    <p>As the zombies approach, you open the seed packet Dave threw you. Inside, you find various seeds with funny names:</p>
+                    <ul>
+                        <li><strong>Peashooter</strong>: Shoots peas at zombies. Says "Ptooey!" with every shot.</li>
+                        <li><strong>Sunflower</strong>: Produces sunshine. Loves to sing and dance.</li>
+                        <li><strong>Wall-nut</strong>: A tough nut that blocks zombies. Very hard-headed.</li>
+                        <li><strong>Potato Mine</strong>: Explodes when zombies get too close. A bit... explosive.</li>
+                    </ul>
+                    <p>Crazy Dave honks his horn. "Plant them! Plant them now! But not the potatoes upside down - they get grumpy!"</p>
+                    <p>The first zombie is getting closer. It's moving slowly, but it looks determined. And hungry. Very hungry.</p>
+                `,
+                choices: [
+                    { text: "Create a row of Peashooters behind Wall-nuts", nextPage: 4, effect: { plants: 3 } },
+                    { text: "Plant Sunflowers in the back to build up sun resources", nextPage: 4, effect: { sun: 50 } },
+                    { text: "Try the Potato Mine - how bad could it be?", nextPage: 4, effect: { plants: 1, zombies: 2 } }
+                ]
+            },
+            {
+                title: "Chapter 3: Your First Defense Line",
+                content: `
+                    <div class="character-image">🥔</div>
+                    <p>Your plants are in the ground! The Sunflowers are happily producing sunshine, which you collect. Each sun gives you 25 points to spend on more plants.</p>
+                    <p>The first zombie reaches your Wall-nut. It starts munching on the poor nut, making loud crunching sounds. The Wall-nut looks annoyed but holds its ground.</p>
+                    <p>Your Peashooters start firing! "Ptooey! Ptooey!" They shoot peas that hit the zombie squarely in the face. The zombie looks confused but keeps coming.</p>
+                    <p>Suddenly, a second zombie appears! This one is wearing a traffic cone on its head. Your peas bounce right off the cone!</p>
+                `,
+                choices: [
+                    { text: "Plant more Peashooters to overwhelm the cone-head zombie", nextPage: 5, effect: { plants: 2, zombies: 1 } },
+                    { text: "Try a Potato Mine to take out both zombies at once", nextPage: 5, effect: { plants: 1, zombies: 2 } },
+                    { text: "Ask Crazy Dave for a better idea", nextPage: 5, effect: { sun: 25 } }
+                ]
+            },
+            {
+                title: "Chapter 4: The Wall-nut Strategy",
+                content: `
+                    <div class="character-image">🥜</div>
+                    <p>Your defense is holding! The zombies are slow, and your plants are doing their job. But more and more zombies are appearing.</p>
+                    <p>Crazy Dave drives by again. "Need more plants? I've got plants! For a price! Do you accept... sun?"</p>
+                    <p>He shows you his catalog of plants. There are so many to choose from!</p>
+                    <ul>
+                        <li><strong>Repeater</strong>: Shoots two peas at once. Double the trouble!</li>
+                        <li><strong>Snow Pea</strong>: Shoots frozen peas that slow zombies down. Brrr!</li>
+                        <li><strong>Chomper</strong>: Eats zombies whole! Needs time to digest. Don't stand too close.</li>
+                    </ul>
+                    <p>Which plant do you buy first?</p>
+                `,
+                choices: [
+                    { text: "Buy a Repeater for double firepower", nextPage: 6, effect: { plants: 1, sun: -200 } },
+                    { text: "Get a Snow Pea to slow the zombies", nextPage: 6, effect: { plants: 1, sun: -175 } },
+                    { text: "Splurge on a Chomper for instant zombie removal", nextPage: 6, effect: { plants: 1, sun: -150 } }
+                ]
+            },
+            {
+                title: "Chapter 5: Cherry Bomb Surprise",
+                content: `
+                    <div class="character-image">💣</div>
+                    <p>Just when you think you've got the hang of this, a huge wave of zombies appears! There are so many that your Peashooters can't keep up.</p>
+                    <p>"Emergency! Emergency!" shouts Crazy Dave, skidding to a stop. "You need the big guns! Or rather, the big plants!"</p>
+                    <p>He hands you a single seed. "This is a Cherry Bomb. It explodes and takes out all zombies in a 3x3 area. But be careful - it'll take out your plants too if they're too close!"</p>
+                    <p>The zombie horde is getting closer. Where do you plant the Cherry Bomb?</p>
+                `,
+                choices: [
+                    { text: "Plant it right in the middle of the zombie crowd", nextPage: 7, effect: { zombies: 5 } },
+                    { text: "Wait until they get closer to your plants for maximum effect", nextPage: 7, effect: { zombies: 8, plants: -2 } },
+                    { text: "Ask Dave if he has anything less... explodey", nextPage: 7, effect: { sun: 50 } }
+                ]
+            },
+            {
+                title: "Chapter 6: The Night Shift Begins",
+                content: `
+                    <div class="character-image">🌙</div>
+                    <p>The sun sets, and night falls. This is bad news - your Sunflowers stop producing sun! How will you get enough resources to plant more defenders?</p>
+                    <p>Crazy Dave appears with a flashlight. "Night time! Spooky time! But don't worry - I've got night plants!"</p>
+                    <p>He shows you a new set of plants that work in the dark:</p>
+                    <ul>
+                        <li><strong>Puff-shroom</strong>: A cheap mushroom that shoots spores. Works at night!</li>
+                        <li><strong>Sun-shroom</strong>: A mushroom that produces a little sun, even at night.</li>
+                        <li><strong>Fume-shroom</strong>: Shoots poisonous gas that goes through zombie defenses.</li>
+                    </ul>
+                    <p>The zombies are still coming. What's your night strategy?</p>
+                `,
+                choices: [
+                    { text: "Plant Sun-shrooms to keep your economy going", nextPage: 8, effect: { plants: 2, sun: 25 } },
+                    { text: "Go with Puff-shrooms for cheap defense", nextPage: 8, effect: { plants: 3 } },
+                    { text: "Try the Fume-shroom to handle cone-head zombies", nextPage: 8, effect: { plants: 1, zombies: 2 } }
+                ]
+            },
+            {
+                title: "Chapter 7: Mushroom Allies",
+                content: `
+                    <div class="character-image">🍄</div>
+                    <p>Your mushroom army is taking shape! The Puff-shrooms are puffing away, the Sun-shrooms are producing precious night-sun, and the Fume-shrooms are making the zombies cough and sputter.</p>
+                    <p>But then a new type of zombie appears - the football zombie! It runs fast and has strong armor. Your regular attacks barely slow it down!</p>
+                    <p>"Oh no! Football zombie!" shouts Dave. "That one's trouble! You need... special measures!"</p>
+                    <p>He offers you two solutions: a Jalapeno that clears an entire lane, or a Squash that squashes any zombie it lands on. Which do you choose?</p>
+                `,
+                choices: [
+                    { text: "Use the Jalapeno to clear the football zombie's lane", nextPage: 9, effect: { zombies: 3 } },
+                    { text: "Try the Squash for targeted removal", nextPage: 9, effect: { zombies: 1 } },
+                    { text: "Use both! (If you have enough sun)", nextPage: 9, effect: { zombies: 4, sun: -125 } }
+                ]
+            },
+            {
+                title: "Chapter 8: Pool Defense Tactics",
+                content: `
+                    <div class="character-image">🏊</div>
+                    <p>Just when you think you've seen it all, the zombies start coming through your pool! How are they walking underwater? And why aren't they getting wet?</p>
+                    <p>"Zombie magic!" explains Crazy Dave. "Don't think about it too hard - just plant some lily pads and get defending!"</p>
+                    <p>You now have to defend both the lawn AND the pool. This is getting complicated!</p>
+                    <p>New aquatic plants are available:</p>
+                    <ul>
+                        <li><strong>Lily Pad</strong>: Lets you plant land plants on water. Very floaty.</li>
+                        <li><strong>Tangle Kelp</strong>: Instantly drowns one zombie. Very grabby.</li>
+                        <li><strong>Sea-shroom</strong>: An underwater Puff-shroom. Doesn't need a lily pad.</li>
+                    </ul>
+                `,
+                choices: [
+                    { text: "Focus on the lawn and use Tangle Kelp for the pool", nextPage: 10, effect: { plants: 2, zombies: 2 } },
+                    { text: "Build a full defense in both areas", nextPage: 10, effect: { plants: 4, sun: -100 } },
+                    { text: "Ask Dave if there's a way to drain the pool", nextPage: 10, effect: { sun: 25 } }
+                ]
+            },
+            {
+                title: "Chapter 9: The Roof Finale",
+                content: `
+                    <div class="character-image">🏠</div>
+                    <p>The zombies have taken to the roofs! They're bungee jumping onto your lawn and rolling down in zombie balls.</p>
+                    <p>"This is it! The final stand!" yells Crazy Dave. "You need roof plants!"</p>
+                    <p>Roof plants are different - they need flower pots to grow in. You have to strategically place pots before you can plant your defenders.</p>
+                    <p>The final wave is coming. Zombies of all types are approaching from all directions. This is the ultimate test of your plant-defending skills!</p>
+                    <p>How do you prepare for the final onslaught?</p>
+                `,
+                choices: [
+                    { text: "Set up a balanced defense with various plant types", nextPage: 11, effect: { plants: 5 } },
+                    { text: "Focus on powerful instant-use plants like Cherry Bombs", nextPage: 11, effect: { zombies: 6 } },
+                    { text: "Use mainly Peashooters and Sunflowers - the classics never fail!", nextPage: 11, effect: { plants: 4, sun: 50 } }
+                ]
+            },
+            {
+                title: "Chapter 10: Dr. Zomboss's Revenge",
+                content: `
+                    <div class="character-image">🤖</div>
+                    <p>Just when you think you've defeated the last zombie, the ground shakes. A massive machine appears, piloted by none other than Dr. Zomboss, the mastermind behind the zombie invasion!</p>
+                    <p>"Foolish human!" he cackles. "You may have defeated my minions, but you cannot defeat my Zombot!"</p>
+                    <p>The Zombot starts firing missiles and stomping on your plants. This is the biggest threat you've faced yet!</p>
+                    <p>Crazy Dave drives up in a converted lawnmower. "This is a job for... the Lawnmower of Doom! And maybe some water balloons!"</p>
+                    <p>How do you take down the Zombot?</p>
+                `,
+                choices: [
+                    { text: "Use all your instant plants at once", nextPage: 12, effect: { zombies: 8, plants: -3 } },
+                    { text: "Strategically target the Zombot's weak points", nextPage: 12, effect: { zombies: 10 } },
+                    { text: "Let Dave's Lawnmower of Doom handle it", nextPage: 12, effect: { zombies: 12 } }
+                ]
+            },
+            {
+                title: "Epilogue: A Hero's Reward",
+                content: `
+                    <div class="character-image">🏆</div>
+                    <p>With a final explosion, the Zombot collapses! Dr. Zomboss parachutes to safety, vowing revenge, but for now, Neighborville is safe.</p>
+                    <p>The townspeople come out of hiding and cheer for you! You're a hero!</p>
+                    <p>Crazy Dave presents you with a golden sunflower trophy. "You did it! You saved the town! And my waffles! To celebrate, let's have... waffles!"</p>
+                    <p>As you enjoy your victory waffles (they're surprisingly delicious), you realize this might not be the end. But for now, you can relax and enjoy your zombie-free garden.</p>
+                    <p>Congratulations, Plant Defender! You've completed Crazy Dave's Adventure!</p>
+                `,
+                choices: [
+                    { text: "Play again for a different experience", nextPage: 0, effect: { reset: true } },
+                    { text: "Check out the bonus chapter", nextPage: 13 },
+                    { text: "View your stats and achievements", nextPage: 14 }
+                ]
+            },
+            {
+                title: "Bonus Chapter: The Secret Garden",
+                content: `
+                    <div class="character-image">🔍</div>
+                    <p>In the aftermath of the zombie invasion, you're cleaning up your garden when you notice something strange - one of the Wall-nuts is glowing!</p>
+                    <p>Upon closer inspection, you discover it's not a Wall-nut at all, but a secret button! When you press it, a hidden door opens in the ground.</p>
+                    <p>You descend into an underground laboratory filled with strange plants you've never seen before. This must be Crazy Dave's secret research facility!</p>
+                    <p>There are plants that shoot lasers, plants that create force fields, and even plants that can travel through time! Dave has been busy.</p>
+                    <p>What do you investigate first?</p>
+                `,
+                choices: [
+                    { text: "The time-traveling plants", nextPage: 14, effect: { special: "timePlant" } },
+                    { text: "The laser-shooting plants", nextPage: 14, effect: { special: "laserPlant" } },
+                    { text: "The force field plants", nextPage: 14, effect: { special: "shieldPlant" } }
+                ]
+            },
+            {
+                title: "Reviews and Critiques",
+                content: `
+                    <div class="character-image">📚</div>
+                    <p><strong>What the critics are saying about your zombie defense strategy:</strong></p>
+                    <p>"A masterclass in botanical warfare!" - Garden Weekly</p>
+                    <p>"This defender's use of Sunflowers shows remarkable economic planning." - Financial Flora Review</p>
+                    <p>"The strategic deployment of Wall-nuts was nothing short of brilliant." - Nut Lovers Monthly</p>
+                    <p>"I've never seen such effective use of Peashooters!" - Pea Shooting Times</p>
+                    <p><strong>Zombie Reviews (less positive):</strong></p>
+                    <p>"Too many plants! Not enough brains! 1/5 stars" - Zombie Weekly</p>
+                    <p>"The Sunflower placement was particularly offensive to our zombie sensibilities." - Undead Gardening Club</p>
+                `,
+                choices: [
+                    { text: "Read the acknowledgments", nextPage: 15 },
+                    { text: "Return to the main menu", nextPage: -1 }
+                ]
+            },
+            {
+                title: "Acknowledgments",
+                content: `
+                    <div class="character-image">🙏</div>
+                    <p><strong>Special thanks to:</strong></p>
+                    <ul>
+                        <li>All the plants who bravely gave their petals in defense of our lawns</li>
+                        <li>Crazy Dave, for his... unique... leadership</li>
+                        <li>The zombies, for being such persistent (if slow-moving) adversaries</li>
+                        <li>The sun, for providing the energy needed to power our plant army</li>
+                        <li>You, the player, for your dedication to zombie-free gardening</li>
+                    </ul>
+                    <p>This adventure may be over, but the fight against zombies continues! Stay vigilant, keep planting, and remember - when life gives you zombies, make a plant army!</p>
+                    <div class="ending-message">
+                        <div class="ending-title">THE END</div>
+                        <div class="ending-image">🎮</div>
+                        <p>Thank you for playing Plants vs. Zombies: Crazy Dave's Adventure!</p>
+                    </div>
+                `,
+                choices: [
+                    { text: "Return to the main menu", nextPage: -1 },
+                    { text: "Play again", nextPage: 0, effect: { reset: true } }
+                ]
+            }
+        ];
+
+        // Initialize the game
+        function initGame() {
+            // Simulate loading
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-menu').style.display = 'block';
+                
+                // Animate the zombie head during loading
+                const zombieHead = document.querySelector('.zombie-head');
+                zombieHead.style.left = '100%';
+            }, 5000);
+            
+            // Load saved game if exists
+            loadGame();
+            
+            // Update stats display
+            updateStatsDisplay();
+        }
+
+        // Show a specific screen
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.container');
+            screens.forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            // Show the requested screen
+            document.getElementById(screenId).style.display = 'block';
+            
+            // Special handling for certain screens
+            if (screenId === 'stats-screen') {
+                updateStatsDisplay();
+            }
+        }
+
+        // Start a new game
+        function startNewGame() {
+            // Reset game state
+            gameState.currentPage = 0;
+            gameState.sunCollected = 50;
+            gameState.zombiesDefeated = 0;
+            gameState.plantsPlanted = 0;
+            gameState.totalChoices = 0;
+            gameState.totalPagesRead = 0;
+            gameState.plantCollection = ['Sunflower', 'Peashooter'];
+            gameState.gameScore = 0;
+            
+            // Show story screen
+            showScreen('story-screen');
+            
+            // Load the first page
+            loadPage(0);
+        }
+
+        // Continue a saved game
+        function continueGame() {
+            if (gameState.savedGames.length > 0) {
+                // Load the most recent saved game
+                const savedGame = gameState.savedGames[gameState.savedGames.length - 1];
+                Object.assign(gameState, savedGame);
+                
+                showScreen('story-screen');
+                loadPage(gameState.currentPage);
+            } else {
+                alert("No saved game found! Starting a new game.");
+                startNewGame();
+            }
+        }
+
+        // Load a specific page
+        function loadPage(pageIndex) {
+            if (pageIndex < 0) {
+                showScreen('main-menu');
+                return;
+            }
+            
+            if (pageIndex >= storyPages.length) {
+                pageIndex = storyPages.length - 1;
+            }
+            
+            gameState.currentPage = pageIndex;
+            gameState.totalPagesRead++;
+            
+            const page = storyPages[pageIndex];
+            
+            document.getElementById('story-title').textContent = page.title;
+            document.getElementById('story-content').innerHTML = page.content;
+            document.getElementById('current-page').textContent = pageIndex + 1;
+            
+            // Update current stats
+            document.getElementById('stat-sun').textContent = gameState.sunCollected;
+            document.getElementById('stat-zombies').textContent = gameState.zombiesDefeated;
+            document.getElementById('stat-plants').textContent = gameState.plantsPlanted;
+            
+            // Clear previous choices
+            const choicesContainer = document.getElementById('story-choices');
+            choicesContainer.innerHTML = '';
+            
+            // Add new choices
+            page.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+                button.textContent = choice.text;
+                button.onclick = () => makeChoice(index);
+                choicesContainer.appendChild(button);
+            });
+            
+            // Save game progress
+            saveGame();
+        }
+
+        // Handle player choice
+        function makeChoice(choiceIndex) {
+            const currentPage = storyPages[gameState.currentPage];
+            const choice = currentPage.choices[choiceIndex];
+            
+            gameState.totalChoices++;
+            
+            // Apply choice effects
+            if (choice.effect) {
+                if (choice.effect.sun) {
+                    gameState.sunCollected += choice.effect.sun;
+                    if (choice.effect.sun > 0) {
+                        createFloatingSun(choice.effect.sun);
+                    }
+                }
+                
+                if (choice.effect.plants) {
+                    gameState.plantsPlanted += choice.effect.plants;
+                }
+                
+                if (choice.effect.zombies) {
+                    gameState.zombiesDefeated += choice.effect.zombies;
+                }
+                
+                if (choice.effect.reset) {
+                    // Reset game but keep some stats
+                    const oldStats = {
+                        totalChoices: gameState.totalChoices,
+                        totalPagesRead: gameState.totalPagesRead,
+                        gameScore: gameState.gameScore
+                    };
+                    startNewGame();
+                    gameState.totalChoices = oldStats.totalChoices;
+                    gameState.totalPagesRead = oldStats.totalPagesRead;
+                    gameState.gameScore = oldStats.gameScore;
+                }
+                
+                if (choice.effect.special) {
+                    // Handle special effects
+                    if (choice.effect.special === 'timePlant' && !gameState.plantCollection.includes('Time-shroom')) {
+                        gameState.plantCollection.push('Time-shroom');
+                    }
+                    if (choice.effect.special === 'laserPlant' && !gameState.plantCollection.includes('Laser Bean')) {
+                        gameState.plantCollection.push('Laser Bean');
+                    }
+                    if (choice.effect.special === 'shieldPlant' && !gameState.plantCollection.includes('Force Field Flower')) {
+                        gameState.plantCollection.push('Force Field Flower');
+                    }
+                }
+            }
+            
+            // Calculate game score
+            gameState.gameScore = Math.floor(
+                (gameState.sunCollected * 0.1) + 
+                (gameState.zombiesDefeated * 5) + 
+                (gameState.plantsPlanted * 2) + 
+                (gameState.totalPagesRead * 3)
+            );
+            
+            // Go to next page
+            loadPage(choice.nextPage);
+        }
+
+        // Create floating sun animation
+        function createFloatingSun(amount) {
+            const sun = document.createElement('div');
+            sun.className = 'sun';
+            sun.style.width = '40px';
+            sun.style.height = '40px';
+            sun.style.position = 'fixed';
+            sun.style.top = '50%';
+            sun.style.left = '50%';
+            sun.style.transform = 'translate(-50%, -50%)';
+            sun.style.zIndex = '1000';
+            
+            document.body.appendChild(sun);
+            
+            // Animate the sun to the sun counter
+            setTimeout(() => {
+                sun.style.transition = 'all 1s ease-in';
+                sun.style.top = '100px';
+                sun.style.left = '50%';
+                sun.style.transform = 'translate(-50%, 0) scale(0.5)';
+                
+                setTimeout(() => {
+                    document.body.removeChild(sun);
+                }, 1000);
+            }, 500);
+        }
+
+        // Navigate to next page
+        function nextPage() {
+            if (gameState.currentPage < storyPages.length - 1) {
+                loadPage(gameState.currentPage + 1);
+            }
+        }
+
+        // Navigate to previous page
+        function previousPage() {
+            if (gameState.currentPage > 0) {
+                loadPage(gameState.currentPage - 1);
+            }
+        }
+
+        // Go to a specific page from table of contents
+        function goToPage(pageIndex) {
+            showScreen('story-screen');
+            loadPage(pageIndex);
+        }
+
+        // Save game progress
+        function saveGame() {
+            // In a real application, this would save to localStorage or a server
+            gameState.savedGames.push({...gameState});
+            
+            // Keep only the 5 most recent saves
+            if (gameState.savedGames.length > 5) {
+                gameState.savedGames = gameState.savedGames.slice(-5);
+            }
+            
+            // Show save confirmation
+            const saveBtn = document.querySelector('.nav-button:nth-child(2)');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Saved!';
+            setTimeout(() => {
+                saveBtn.textContent = originalText;
+            }, 1000);
+        }
+
+        // Load game progress
+        function loadGame() {
+            // In a real application, this would load from localStorage or a server
+            // For now, we'll just initialize with default values
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            document.getElementById('total-sun').textContent = gameState.sunCollected;
+            document.getElementById('total-zombies').textContent = gameState.zombiesDefeated;
+            document.getElementById('total-plants').textContent = gameState.plantsPlanted;
+            document.getElementById('total-choices').textContent = gameState.totalChoices;
+            document.getElementById('total-pages').textContent = gameState.totalPagesRead;
+            document.getElementById('game-score').textContent = gameState.gameScore;
+            
+            // Update plant collection
+            const plantCollection = document.getElementById('plant-collection');
+            plantCollection.innerHTML = '';
+            
+            gameState.plantCollection.forEach(plant => {
+                const plantElement = document.createElement('div');
+                plantElement.className = 'stat-item';
+                plantElement.innerHTML = `
+                    <div class="stat-value">${getPlantEmoji(plant)}</div>
+                    <div class="stat-label">${plant}</div>
+                `;
+                plantCollection.appendChild(plantElement);
+            });
+        }
+
+        // Get emoji for plant
+        function getPlantEmoji(plantName) {
+            const emojiMap = {
+                'Sunflower': '🌻',
+                'Peashooter': '🌱',
+                'Wall-nut': '🥜',
+                'Potato Mine': '🥔',
+                'Repeater': '🌱🌱',
+                'Snow Pea': '❄️',
+                'Chomper': '👄',
+                'Cherry Bomb': '💣',
+                'Puff-shroom': '🍄',
+                'Sun-shroom': '🍄☀️',
+                'Fume-shroom': '🍄💨',
+                'Jalapeno': '🌶️',
+                'Squash': '🥎',
+                'Lily Pad': '🍃',
+                'Tangle Kelp': '🌿',
+                'Sea-shroom': '🍄🌊',
+                'Time-shroom': '🍄⏰',
+                'Laser Bean': '🍄🔫',
+                'Force Field Flower': '🍄🛡️'
+            };
+            
+            return emojiMap[plantName] || '🌱';
+        }
+
+        // Change theme
+        function changeTheme(theme) {
+            document.body.classList.remove('theme-dark', 'theme-zombie');
+            
+            if (theme === 'dark') {
+                document.body.classList.add('theme-dark');
+            } else if (theme === 'zombie') {
+                document.body.classList.add('theme-zombie');
+            }
+            
+            gameState.currentTheme = theme;
+        }
+
+        // Change font size
+        function changeFontSize(size) {
+            document.body.style.fontSize = size + 'px';
+        }
+
+        // Toggle auto scroll
+        function toggleAutoScroll(enabled) {
+            gameState.autoScroll = enabled;
+        }
+
+        // Toggle sound effects
+        function toggleSoundEffects(enabled) {
+            gameState.soundEffects = enabled;
+        }
+
+        // Reset game progress
+        function resetGame() {
+            if (confirm("Are you sure you want to reset all game progress? This cannot be undone!")) {
+                gameState.currentPage = 0;
+                gameState.sunCollected = 0;
+                gameState.zombiesDefeated = 0;
+                gameState.plantsPlanted = 0;
+                gameState.totalChoices = 0;
+                gameState.totalPagesRead = 0;
+                gameState.plantCollection = [];
+                gameState.gameScore = 0;
+                gameState.savedGames = [];
+                
+                updateStatsDisplay();
+                alert("Game progress has been reset.");
+            }
+        }
+
+        // Toggle menu (for floating button)
+        function toggleMenu() {
+            if (document.getElementById('main-menu').style.display === 'block') {
+                showScreen('story-screen');
+            } else {
+                showScreen('main-menu');
+            }
+        }
+
+        // Exit app
+        function exitApp() {
+            if (confirm("Are you sure you want to exit?")) {
+                // In a real app, this would close the window or app
+                alert("Thanks for playing Plants vs. Zombies: Crazy Dave's Adventure!");
+            }
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>
